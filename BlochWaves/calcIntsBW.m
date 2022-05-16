@@ -1,4 +1,4 @@
-function [psi_G_array,hklSel,isSel] = calcIntsBW(theta1,theta2,nUC,...
+function [psi_G_array,GhklSel] = calcIntsBW(theta1,theta2,nUC,...
     UThresh,sThresh,sDiff)
 %CALCDIFFBW Calculate diffracted intensities using Bloch Wave method
 %   theta1 = x component of sample tilt (rad)
@@ -23,6 +23,7 @@ s_G = computeExcitationError(theta1,theta2,Ghkl,lambElec);
 U_0 = U_G(hkl(:,1) == 0 & hkl(:,2) == 0 & hkl(:,3) == 0);
 isSel = abs(s_G) < sThresh & abs(U_G) > UThresh*U_0;
 hklSel = hkl(isSel,:);
+GhklSel = Ghkl(isSel,:);
 
 %% Build and solve matrix equation
 N = sum(isSel);
@@ -59,10 +60,10 @@ dz = cellDim(3);
 zTest = (1:nUC)*dz;
 nZ = numel(zTest);
 
-psi_G_array = zeros(nZ,N);
+psi_G_array = zeros(N,nZ);
 
 for iZ = 1:nZ
-    psi_G_array(iZ,:) = psi_G(zTest(iZ));
+    psi_G_array(:,iZ) = psi_G(zTest(iZ));
 end
 
 end

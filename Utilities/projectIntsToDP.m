@@ -1,12 +1,13 @@
-function [IDiff,qxa,qya] = calcDiffBW(psi_G_array,isSel,sDiff)
+function [IDiff,qxa,qya] = projectIntsToDP(IArray,GhklSel,sDiff)
 %CALCDIFFBW Calculate diffraction pattern from Bloch wave computed
 %intensities
-%   psi_G_Array = Bloch wave computed intensities
+%   Iarray = Diffraction peak intensities vs thickness
+%   Ghklsel = Reciprocal lattice vectors of the selected peaks
 %   sDiff
 %   NOTE: ASSUMES CENTROSYMMETRIC CRYSTAL
 
-N = sum(isSel);
-nUC = size(psi_G_array,1);
+N = size(IArray,1);
+nUC = size(IArray,2);
 
 % Unpack input variable structure
 fieldNames = fieldnames(sDiff);
@@ -15,18 +16,18 @@ for iField = 1:nFields
     [~] = evalc([fieldNames{iField} ' = sDiff.' fieldNames{iField}]);
 end
 
+% Generate reciprocal-space grid on which to project DP
 Nx = 32;
 Ny = Nx;
 qx = makeFourierCoords(Nx,cellDim(1)/Nx);
 qy = makeFourierCoords(Ny,cellDim(2)/Ny);
-dqx = qx(2)-qx(1);
-dqy = qy(2)-qy(1);
 [qya,qxa] = meshgrid(qy,qx);
 
 % Planar approximation to find diffraction positions
-Gtheta = atan2(Ghkl(:,2),Ghkl(:,1));
-GxProj = Gmag(isSel).*cos(Gtheta(isSel));
-GyProj = Gmag(isSel).*sin(Gtheta(isSel));
+GmagSel = sqrt(GhklSel(:,1).^2 + GhklSel(:,2).^2 + GhklSel(:,3).^2);
+GthetaSel = atan2(GhklSel(:,2),GhklSel(:,1));
+GxProj = GmagSel.*cos(GthetaSel);
+GyProj = GmagSel.*sin(GthetaSel);
 % identify indices to fill in patterns
 indxProj = zeros(N,1);
 indyProj = zeros(N,1);
@@ -35,10 +36,11 @@ for iBeam = 1:N
     [~,indyProj(iBeam)] = min(abs(GyProj(iBeam)-qy));
 end
 
+% Accumulte diffracted intensities on the generated grid
 IDiff = zeros(Ny,Nx,nUC);
 for iUC = 1:nUC
     IDiff(:,:,iUC) = accumarray([indxProj,indyProj],...
-        abs(psi_G_array(iUC,:)').^2,[Ny,Nx]);
+        IArray(:,iUC)',[Ny,Nx]);
 end
 
 end
