@@ -5,6 +5,7 @@ function [psi_G_array,hklSel,isSel] = calcIntsBW(theta1,theta2,nUC,...
 %   theta2 = y component (rad)
 %   UThresh = Scattering potential lower threshold as fraction of U_0
 %   sThresh = Excitation error upper threshold (Angstroms)
+%   sDiff = setup struct
 %   NOTE: ASSUMES CENTROSYMMETRIC CRYSTAL
 
 % Unpack input variable structure
