@@ -115,14 +115,8 @@ else % equal slices
 end
 
 % Calculate wavelength and electron interaction parameter
-m = 9.109383*10^-31;
-e = 1.602177*10^-19;
-c =  299792458;
-h = 6.62607*10^-34;
-sDiff.lambda = h/sqrt(2*m*e*sDiff.E0) ...
-    /sqrt(1 + e*sDiff.E0/2/m/c^2) * 10^10; % wavelength in A
-sDiff.sigma = (2*pi/sDiff.lambda/sDiff.E0) ...
-    *(m*c^2+e*sDiff.E0)/(2*m*c^2+e*sDiff.E0); % V^-1 Ang^-1
+sDiff.lambda = computeElectronWavelength(sDiff.E0);
+sDiff.sigma = computeInteractionParameter(sDiff.E0); % V^-1 Ang^-1
 
 % Coords
 qx = makeFourierCoords(sDiff.imageSize(1),sDiff.pixelSize(1));

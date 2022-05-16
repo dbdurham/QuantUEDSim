@@ -1,8 +1,8 @@
-function [lamb] = wavelengthElectrons(E0)
-%WAVELENGTHELECTRONS Compute de Broglie wavelength (in Angstroms)
+function [lamb] = computeElectronWavelength(E0)
+%COMPUTEELECTRONWAVELENGTH Compute de Broglie wavelength (in Angstroms)
 % of relativistic electron
-%   E0 - energy in keV
-E0 = E0*1e3; % convert to eV
+%   E0 - energy in eV
+
 m = 9.109383*10^-31;
 e = 1.602177*10^-19;
 c =  299792458;

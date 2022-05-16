@@ -4,13 +4,12 @@
 E0 = 750e3; %eV
 
 % Relevant physical constants
-lambElec = computeElectronWavelength(E0); % Electron wavelength (Angstroms)
 m = 9.11e-31; % Electron mass (kg)
 c = 3e8; % Speed of light (m/s)
 e = 1.602e-19; % Charge of electron (C)
-sigma = (2*pi/lambElec/E0) ...
-    *(m*c^2+e*E0)/(2*m*c^2+e*E0); % Interaction parameter (rad / (V*A))
-a0 = 0.5292; % Bohr radius in Angstroms
+
+lambElec = computeElectronWavelength(E0); % Angstroms
+sigma = computeInteractionParameter(E0); % rad/(V*Angstroms)
 
 %% 1. Generate crystal structure and reciprocal lattice
 
@@ -21,30 +20,17 @@ Z = atoms(:,4); % Atomic number
 nAtoms = size(lattice,1); % Number of atoms in unit cell
 Vcryst = prod(cellDim); % unit cell volume (Angstroms^3)
 
-% Compute reciprocal lattice vectors by real-space lattice inversion
-Gvec = inv(uvwInit'); % Matrix of reciprocal lattice (row) vectors (Angstroms^-1)
-
 % Generate mesh of hkl
 hRange = [-26 26];
 kRange = [-26 26];
-lRange = [-2 2];
-hLen = diff(hRange)+1;
-kLen = diff(kRange)+1;
-lLen = diff(lRange)+1;  
-[h,k,l] = ndgrid(hRange(1):hRange(2),kRange(1):kRange(2),lRange(1):lRange(2));
-hkl = [h(:) k(:) l(:)];
+lRange = [-2 2]; 
+[hkl,Ghkl,Gmag,dhkl] = generateReciprocalLattice(...
+    uvwInit,hRange,kRange,lRange);
 nOrders = size(hkl,1);
 
-% Compute scattering vectors and magnitudes (Angstroms^-1)
-Ghkl = zeros(nOrders,3);
-Gmag = zeros(nOrders,1);
-for iOrder = 1:nOrders
-    Ghkl(iOrder,:) = hkl(iOrder,1)*Gvec(1,:) ...
-        + hkl(iOrder,2)*Gvec(2,:) ...
-        + hkl(iOrder,3)*Gvec(3,:) ;
-    Gmag(iOrder) = norm(Ghkl(iOrder,:));
-end
-dhkl = 1./Gmag; % Interplanar spacing (Angstroms)
+hLen = diff(hRange)+1;
+kLen = diff(kRange)+1;
+lLen = diff(lRange)+1; 
 
 %% 2. Compute library of 3D specimen potential Fourier components U_G
 
@@ -66,11 +52,7 @@ for ii = 1:nOrders
     for xx = 1:nAtoms
         switch scatApprox
             case 'Born'
-                if correctScat
-                    f = gamma*electronScatteringFactor(Z(xx),Gmag(ii));
-                else
-                    f = electronScatteringFactor(Z(xx),Gmag(ii));
-                end
+                f = electronScatteringFactor(Z(xx),Gmag(ii));
             case 'Moliere'
                 f = electronScatteringFactorMoliere(Z(xx),Gmag(ii),E0);
         end
