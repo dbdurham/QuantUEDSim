@@ -35,34 +35,11 @@ lLen = diff(lRange)+1;
 %% 2. Compute library of 3D specimen potential Fourier components U_G
 
 % Compute structure factors
+Fhkl = computeStructureFactors(lattice,Z,hkl,Gmag,E0,...
+    'Born',false);
 
-F_hkl = zeros(nOrders,1);
-gamma = 1+(e*E0/m/c^2); % Electron Lorentz factor
-
-scatApprox = 'Born'; % 'Born','Moliere'
-% NOTE: Moliere approx gives complex scattering factors which makes
-% U_G complex and in turn the matrix eigenvalues complex later on!
-% Not sure if physical...
-% NOTE: Check validity of the gamma correction to the
-% scattering factors! Increases scattering factors for 
-% relativistic beams... maybe not needed with sigma included?
-correctScat = false;
-
-for ii = 1:nOrders
-    for xx = 1:nAtoms
-        switch scatApprox
-            case 'Born'
-                f = electronScatteringFactor(Z(xx),Gmag(ii));
-            case 'Moliere'
-                f = electronScatteringFactorMoliere(Z(xx),Gmag(ii),E0);
-        end
-        F_hkl(ii) = F_hkl(ii) ...
-            + f *exp(-2i*pi*(hkl(ii,1)*lattice(xx,1) + hkl(ii,2)*lattice(xx,2)...
-            + hkl(ii,3)*lattice(xx,3)));       
-    end
-end
-
-U_G = (sigma/(pi*lambElec))*(47.86/Vcryst).*F_hkl;
+% Scattering potential Fourier components
+U_G = (sigma/(pi*lambElec))*(47.86/Vcryst).*Fhkl;
 
 % Debye-Waller factor
 urms = 0.0894; % 1D rms displacement perpendicular to Bragg planes (Angstroms)

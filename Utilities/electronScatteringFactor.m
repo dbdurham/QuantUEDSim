@@ -1,8 +1,9 @@
-function fe = electronScatteringFactor(Z,q)
+function fe = electronScatteringFactor(Z,q,fparams)
 % ELECTRONSCATTERINGFACTOR Retrieve the parameterized electron scattering
 % factor
 % Z = atomic number
 % q = scattering vector magnitude (1/d)
+% fparams = scattering factor parameter table from Kirkland
 % 
 % Parameterization from Kirkland is arrays given as
 % a1 b1 a2 b2
@@ -11,7 +12,6 @@ function fe = electronScatteringFactor(Z,q)
 % fe(q) = sum_i_N (ai/(q^2 + bi) + sum_i_N ci*exp(-di*q^2);
 % Parameters are in units of Angstroms
 
-load('fparams.mat','fparams')
 fparamsEl = fparams(Z,:)'; 
 a = [1 3 5];
 b = [2 4 6];

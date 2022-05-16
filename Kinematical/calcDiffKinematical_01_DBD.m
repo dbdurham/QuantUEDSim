@@ -32,25 +32,9 @@ nOrders = size(hkl,1);
 % NOTE: scattering factors assumed independent of beam energy... an
 % approximation often made for relativistic electrons
 
-F_hkl = zeros(nOrders,1); % Complex structure factor
-
-scatApprox = 'Moliere'; % 'Born','Moliere'
-
-for ii = 1:nOrders
-    for xx = 1:nAtoms
-        switch scatApprox
-            case 'Born'
-                f = gamma*electronScatteringFactor(Z(xx),Gmag(ii));
-            case 'Moliere'
-                f = electronScatteringFactorMoliere(Z(xx),Gmag(ii),E0*1e3);
-        end
-        F_hkl(ii) = F_hkl(ii) ...
-            + f *exp(-2i*pi*(hkl(ii,1)*lattice(xx,1) + hkl(ii,2)*lattice(xx,2)...
-            + hkl(ii,3)*lattice(xx,3)));       
-    end
-end
-
-SFMag = abs(F_hkl); % Structure factor magnitude
+Fhkl = computeStructureFactors(lattice,Z,hkl,Gmag,E0,...
+    'Moliere',false);
+SFMag = abs(Fhkl); % Structure factor magnitude
 
 %% Compute diffraction vs thickness
 
