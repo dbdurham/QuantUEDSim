@@ -68,23 +68,28 @@ for a0 = 1:sDiff.numSlices
             xp = mod(sDiff.xvec+xR,sDiff.imageSize(1))+1;
             yp = mod(sDiff.yvec+yR,sDiff.imageSize(2))+1;
             [Xp,Yp] = meshgrid(xp,yp);
-            if isfield(sDiff,'anisoCryst') && abs(sDiff.anisoCryst) > 0
-                % compute crystallographic displacement kernel
-                [Xr,Yr] = meshgrid(xr,yr);
-                r2 = Xr.^2 + Yr.^2;
-                Thetar = atan2(Yr,Xr);
-                profCorr = 1+sDiff.anisoCryst^2/2; % Correction factor to
-                % maintain fixed u^2
-                Sigmar = sqrt(sDiff.uRMS^2 / profCorr ...
-                    *(1 + sDiff.anisoCryst.*(2*cos(2*Thetar).^2 - 1)));
-                crystKernel = exp(-r2./(2*(Sigmar.^2)));
-%                     u2Cryst = sum(r2(:).*crystKernel(:))./sum(crystKernel(:));
-%                     u2Round = 2*sDiff.uRMS.^2;
-                DWFilter = fft2(crystKernel);
-                % Normalize
-                DWFilter = abs(DWFilter ./ abs(DWFilter(1,1)));
+            if sDiff.DWDamping
+                if isfield(sDiff,'anisoCryst') && abs(sDiff.anisoCryst) > 0
+                    % compute crystallographic displacement kernel
+                    [Xr,Yr] = meshgrid(xr,yr);
+                    r2 = Xr.^2 + Yr.^2;
+                    Thetar = atan2(Yr,Xr);
+                    profCorr = 1+sDiff.anisoCryst^2/2; % Correction factor to
+                    % maintain fixed u^2
+                    Sigmar = sqrt(sDiff.uRMS^2 / profCorr ...
+                        *(1 + sDiff.anisoCryst.*(2*cos(2*Thetar).^2 - 1)));
+                    crystKernel = exp(-r2./(2*(Sigmar.^2)));
+    %                     u2Cryst = sum(r2(:).*crystKernel(:))./sum(crystKernel(:));
+    %                     u2Round = 2*sDiff.uRMS.^2;
+                    DWFilter = fft2(crystKernel);
+                    % Normalize
+                    DWFilter = abs(DWFilter ./ abs(DWFilter(1,1)));
+                else
+                    [~,~,DWFAmp] = computeDWF(sDiff.uRMS,1,sDiff.q2Pot);
+                    DWFilter = DWFAmp;
+                end
             else
-                DWFilter = exp(-sDiff.M*sDiff.q2Pot);
+                DWFilter = ones(size(sDiff.potLookupFFT,[1 2]));
             end
             potToAdd = ifft2(sDiff.potLookupFFT(:,:,indType) ... % FFT of atomic potential
                 .* exp(dx*sDiff.potShiftX + dy*sDiff.potShiftY)... % subpixel shift

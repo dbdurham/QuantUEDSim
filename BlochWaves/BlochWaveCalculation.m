@@ -43,8 +43,8 @@ U_G = (sigma/(pi*lambElec))*(47.86/Vcryst).*Fhkl;
 
 % Debye-Waller factor
 urms = 0.0894; % 1D rms displacement perpendicular to Bragg planes (Angstroms)
-B = 8*pi^2*urms^2; % Debye-Waller B Factor
-U_G = U_G.*exp(-B*Gmag.^2./4);
+[~,~,DWFAmp] = computeDWF(urms,1,Gmag);
+U_G = U_G.*DWFAmp;
 
 % Force U_G to be real (correct for centrosymmetric crystals)
 U_G = real(U_G); 
