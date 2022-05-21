@@ -17,7 +17,10 @@ sDiff.theta_x = theta_x;
 sDiff.theta_y = theta_y;
 
 % Compute potential at prescribed sample tilt
-sDiff = computePotential(sDiff);
+correctPotsForTilt = false;
+if correctPotsForTilt
+    sDiff = computePotential(sDiff);
+end
 
 % Option to recompute pots for each unit cell
 computePot = sDiff.computePot;
