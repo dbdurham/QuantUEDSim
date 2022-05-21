@@ -70,7 +70,8 @@ sDiff.downSampFac = sDiff.cellMult; % only keep every downSampFac pixels... Is a
 wyckOptions.cellMult = sDiff.cellMult;
 
 % Generate simulation cell: parameters and atomic coordinates
-[sDiff.atoms,sDiff.cellDim] = wyckoffGold(wyckOptions);
+[sDiff.atoms,sDiff.cellDim,~,uvwInit] = wyckoffGold(wyckOptions);
+sDiff.Gvec = inv(uvwInit');
 
 % Compute final pixel size
 sDiff.imageSize = sDiff.imageSizeCell*sDiff.cellMult;
