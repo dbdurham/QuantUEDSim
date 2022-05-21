@@ -2,9 +2,9 @@ function [qx,qy] = makeFourierCoords(N,pixelSize)
 % This function generates Fourier coordinates.
 % Updated 2017 to fix odd sizes, and allow 2D output.
 if mod(N(1),2) == 0
-    qx = circshift(((-N(1)/2):(N(1)/2-1))/(N(1)*pixelSize),[0 -N(1)/2]);
+    qx = circshift(((-N(1)/2):(N(1)/2-1))/(N(1)*pixelSize(1)),[0 -N(1)/2]);
 else
-    qx = circshift((((1-N(1))/2):((N(1)-1)/2))/(N(1)*pixelSize),[0 (1-N(1))/2]);
+    qx = circshift((((1-N(1))/2):((N(1)-1)/2))/(N(1)*pixelSize(1)),[0 (1-N(1))/2]);
 end
 if nargout == 2
     % Check to see if second dimension length is same as first
@@ -12,10 +12,13 @@ if nargout == 2
         [qy,qx] = meshgrid(qx);
     else
         % Add second dimension
+        if numel(pixelSize) == 1
+            pixelSize(2) = pixelSize(1);
+        end
         if mod(N(2),2) == 0
-            qy = circshift(((-N(2)/2):(N(2)/2-1))/(N(2)*pixelSize),[0 -N(2)/2]);
+            qy = circshift(((-N(2)/2):(N(2)/2-1))/(N(2)*pixelSize(2)),[0 -N(2)/2]);
         else
-            qy = circshift((((1-N(2))/2):((N(2)-1)/2))/(N(2)*pixelSize),[0 (1-N(2))/2]);
+            qy = circshift((((1-N(2))/2):((N(2)-1)/2))/(N(2)*pixelSize(2)),[0 (1-N(2))/2]);
         end
         [qy,qx] = meshgrid(qy,qx);
     end
