@@ -1,10 +1,10 @@
 function [IDiff,qxa,qya] = projectIntsToDP(IArray,GhklSel,sDiff)
-%CALCDIFFBW Calculate diffraction pattern from Bloch wave computed
+%PROJECTINTsTODP Calculate diffraction pattern from Bloch wave computed
 %intensities
 %   Iarray = Diffraction peak intensities vs thickness
 %   Ghklsel = Reciprocal lattice vectors of the selected peaks
-%   sDiff
-%   NOTE: ASSUMES CENTROSYMMETRIC CRYSTAL
+%   sDiff - struct containing sim parameters
+%
 
 N = size(IArray,1);
 nUC = size(IArray,2);

@@ -13,18 +13,8 @@ Gvec = inv(uvwInit'); % Matrix of reciprocal lattice (row) vectors (Angstroms^-1
 
 [h,k,l] = ndgrid(hRange(1):hRange(2),kRange(1):kRange(2),lRange(1):lRange(2));
 hkl = [h(:) k(:) l(:)];
-nOrders = size(hkl,1);
 
-% Compute scattering vectors and magnitudes (Angstroms^-1)
-Ghkl = zeros(nOrders,3);
-Gmag = zeros(nOrders,1);
-for iOrder = 1:nOrders
-    Ghkl(iOrder,:) = hkl(iOrder,1)*Gvec(1,:) ...
-        + hkl(iOrder,2)*Gvec(2,:) ...
-        + hkl(iOrder,3)*Gvec(3,:) ;
-    Gmag(iOrder) = norm(Ghkl(iOrder,:));
-end
-dhkl = 1./Gmag; % Interplanar spacing (Angstroms)
+[Ghkl,Gmag,dhkl] = computeScatteringVectors(hkl,Gvec);
 
 end
 
