@@ -69,8 +69,8 @@ for iTest = 1:nTests
             & 0 == hklSel(:,3));
     I0Array(:,iTest) = IArraySel(indZero,:);
     % Project diffracted ints onto DP
-    NDP = [32 32];
-    pixelSize = sDiff.cellDim(1:2)./NDP;
+    NDP = [64 64];
+    pixelSize = 2*sDiff.cellDim(1:2)./NDP;
     [qxa,qya] = makeFourierCoords(NDP,pixelSize);
     IDiff = projectIntsToDP(IArraySel,GhklSel,qxa,qya);
     % Extract diffracted ints being tested
