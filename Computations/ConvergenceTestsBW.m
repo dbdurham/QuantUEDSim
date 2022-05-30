@@ -1,5 +1,13 @@
 %% Convergence tests -- Gold
 clear all; clc;close all;
+
+%% Set up simulation
+
+tic
+disp('Setting up...')
+sDiff = setupSimBW();
+toc
+
 %% Choose diffracted beams to study
 
 hklTest = [2 0 0;...
@@ -16,36 +24,36 @@ for iPeak = 1:nPeaks
     peakNames{iPeak} = strrep(num2str(hklTest(iPeak,:)),' ','');
 end
 
+GhklTest = computeScatteringVectors(hklTest,sDiff.Gvec);
+
 %% Perform simulations for varying params, extract ints vs thickness
 
-paramToTest = 'GxyThresh';
-paramRange = [2 2.5 3 3.5 4];
-isWyckoffOpt = false;
+% paramToTest = 'GxyThresh';
+% paramRange = [2 2.5 3 3.5 4 4.5 5];
+% sThresh = 0.4/sDiff.cellDim(3);
 
-tic
-disp('Setting up...')
-sDiff = setupSimBW();
-toc
-
-GzThresh = 1*1.01/sDiff.cellDim(3);
+paramToTest = 'sThresh';
+paramRange = [0.1 0.15 0.2 0.3 0.4 0.5 0.6]./sDiff.cellDim(3);
+GxyThresh = 4.5;
 
 nTests = length(paramRange);
 
 % Simulation parameters
 nUCs = 40; % number of sim cells
-theta_x = 0;
+theta_x = -0.1;
 theta_y = 0; %rad
 
 IArray = zeros(nPeaks,nUCs,nTests);
 I0Array = zeros(nUCs,nTests);
+tArray = 0.1*sDiff.cellDim(3)*(1:nUCs);
 
 for iTest = 1:nTests
     % Update params
     switch paramToTest
         case 'GxyThresh'
             GxyThresh = paramRange(iTest);
-        case 'GzThresh'
-            GzThresh = paramRange(iTest);
+        case 'sThresh'
+            sThresh = paramRange(iTest);
     end
     
     rng(0) % fix random seed for comparison
@@ -53,26 +61,31 @@ for iTest = 1:nTests
     % Perform simulation
     tic
     disp(['Computing test # ' num2str(iTest)])
-    [IArraySel,~,hklSel,~] = calcIntsBW(theta_x,theta_y,nUCs,...
-        GxyThresh,GzThresh,sDiff);
-    for iPeak = 1:nPeaks
-        indPeak = find(hklTest(iPeak,1) == hklSel(:,1) ...
-            & hklTest(iPeak,2) == hklSel(:,2) ...
-            & hklTest(iPeak,3) == hklSel(:,3));
-        IArray(iPeak,:,iTest) = IArraySel(indPeak,:);
-    end
+    [IArraySel,~,hklSel,GhklSel] = calcIntsBW(theta_x,theta_y,nUCs,...
+        GxyThresh,sThresh,sDiff);
+    % Extract zero beam intensity
     indZero = find(0 == hklSel(:,1) ...
             & 0 == hklSel(:,2) ...
             & 0 == hklSel(:,3));
     I0Array(:,iTest) = IArraySel(indZero,:);
+    % Project diffracted ints onto DP
+    NDP = [32 32];
+    pixelSize = sDiff.cellDim(1:2)./NDP;
+    [qxa,qya] = makeFourierCoords(NDP,pixelSize);
+    IDiff = projectIntsToDP(IArraySel,GhklSel,qxa,qya);
+    % Extract diffracted ints being tested
+    IArray(:,:,iTest) = extractIntsFromDP(IDiff,qxa,qya,GhklTest);
     toc
 
 end
 
 %% Plot intensity vs thickness for each peak as function of parameter
 
-tArray = 0.1*sDiff.cellDim(3)*(1:nUCs);
 showIvtVsParam(IArray,tArray,peakNames,paramToTest,paramRange)
+
+%% View the last generated diffraction pattern stack
+
+StackViewerDiff(fftshift(fftshift(IDiff,1),2),tArray*0.1);
 
 %% Compute and plot DP errors vs thickness for each parameter result
 

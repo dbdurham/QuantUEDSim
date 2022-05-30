@@ -1,12 +1,11 @@
 function [Iarray,psi_G_array,hklSel,GhklSel] = calcIntsBW(theta1,theta2,nUC,...
-    GxyThresh,GzThresh,sDiff)
+    GxyThresh,sThresh,sDiff)
 %CALCDIFFBW Calculate diffracted intensities using Bloch Wave method
 %   theta1 = x component of sample tilt (rad)
 %   theta2 = y component (rad)
 %   GxyThresh = selection threshold on in-plane reciprocal lattice distance (inv
 %   Angstroms)
-%   GzThresh = selection threshold on out-of-plane reciprocal lattice
-%   distance (inv Angstroms)
+%   sThresh = upper threshold on excitation error (inv Angstroms)
 %   sDiff = setup struct
 %   NOTE: ASSUMES CENTROSYMMETRIC CRYSTAL
 
@@ -20,10 +19,13 @@ end
 % Compute excitation errors (inv Angstroms)
 s_G = computeExcitationError(theta1,theta2,Ghkl,lambElec); 
 
-% Select beams within specified reciprocal space volume
+% Select beams within specified reciprocal space volume around 
+% the Ewald sphere
 Gxy = sqrt(Ghkl(:,1).^2 + Ghkl(:,2).^2);
-Gz = abs(Ghkl(:,3));
-isSel = Gz < GzThresh & Gxy < GxyThresh & ~(U_G==0);
+% Gz = abs(Ghkl(:,3));
+isSel = Gxy < GxyThresh ...
+    & ~(U_G==0) ...
+    & abs(s_G) < sThresh;
 hklSel = hkl(isSel,:);
 GhklSel = Ghkl(isSel,:);
 
@@ -36,6 +38,16 @@ hklDiff = zeros(N,N,3);
 for ii = 1:3
     hklDiff(:,:,ii) = repmat(hklSel(:,ii),[1 N])...
         -repmat(hklSel(:,ii)',[N 1]);
+end
+
+if any(hklDiff(:,:,1) > hRange(2) | hklDiff(:,:,1) < hRange(1),'all')
+    disp('h out of range, need more h points')
+end
+if any(hklDiff(:,:,2) > kRange(2) | hklDiff(:,:,2) < kRange(1),'all')
+    disp('k out of range, need more k points')
+end
+if any(hklDiff(:,:,3) > lRange(2) | hklDiff(:,:,3) < lRange(1),'all')
+    disp('l out of range, need more l points')
 end
 
 indDiff = sub2ind([hLen,kLen,lLen],...
