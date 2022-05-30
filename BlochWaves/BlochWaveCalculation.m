@@ -7,13 +7,12 @@ sDiff = setupSimBW;
 theta1 = 0.1; % rad, x component of tilt
 theta2 = 0; % rad, y component of tilt
 nUC = 100; % Number of unit cells to simulate
-UThresh = 5e-3; % Lower threshold on scattering potential of beams to include
-sThresh = 5e-2; % Upper threshold on excitation error of beams to include
+GxyThresh = 2; % Upper threshold on in-plane G of beams to include (inv Angstroms)
+GzThresh = 1*1.01/sDiff.cellDim(3); % Upper threshold on out-of-plane G of beams to include (inv Angstroms)
 
 % Calculate diffracted intensities for selected thicknesses
-[psi_G_array,GhklSel] = calcIntsBW(theta1,theta2,nUC,...
-    UThresh,sThresh,sDiff);
-IArray = abs(psi_G_array).^2;
+[IArray,psi_G_array,hklSel,GhklSel] = calcIntsBW(theta1,theta2,nUC,...
+    GxyThresh,GzThresh,sDiff);
 tArray = (1:nUC)*sDiff.cellDim(3); % Angstroms
 
 % Plot diffracted intensities vs thickness

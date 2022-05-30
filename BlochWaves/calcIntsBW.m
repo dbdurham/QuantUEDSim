@@ -1,10 +1,12 @@
-function [psi_G_array,GhklSel] = calcIntsBW(theta1,theta2,nUC,...
-    UThresh,sThresh,sDiff)
+function [Iarray,psi_G_array,hklSel,GhklSel] = calcIntsBW(theta1,theta2,nUC,...
+    GxyThresh,GzThresh,sDiff)
 %CALCDIFFBW Calculate diffracted intensities using Bloch Wave method
 %   theta1 = x component of sample tilt (rad)
 %   theta2 = y component (rad)
-%   UThresh = Scattering potential lower threshold as fraction of U_0
-%   sThresh = Excitation error upper threshold (Angstroms)
+%   GxyThresh = selection threshold on in-plane reciprocal lattice distance (inv
+%   Angstroms)
+%   GzThresh = selection threshold on out-of-plane reciprocal lattice
+%   distance (inv Angstroms)
 %   sDiff = setup struct
 %   NOTE: ASSUMES CENTROSYMMETRIC CRYSTAL
 
@@ -18,10 +20,10 @@ end
 % Compute excitation errors (inv Angstroms)
 s_G = computeExcitationError(theta1,theta2,Ghkl,lambElec); 
 
-% Select beams within specified excitation and scattering magnitude
-% thresholds
-U_0 = U_G(hkl(:,1) == 0 & hkl(:,2) == 0 & hkl(:,3) == 0);
-isSel = abs(s_G) < sThresh & abs(U_G) > UThresh*U_0;
+% Select beams within specified reciprocal space volume
+Gxy = sqrt(Ghkl(:,1).^2 + Ghkl(:,2).^2);
+Gz = abs(Ghkl(:,3));
+isSel = Gz < GzThresh & Gxy < GxyThresh & ~(U_G==0);
 hklSel = hkl(isSel,:);
 GhklSel = Ghkl(isSel,:);
 
@@ -65,6 +67,8 @@ psi_G_array = zeros(N,nZ);
 for iZ = 1:nZ
     psi_G_array(:,iZ) = psi_G(zTest(iZ));
 end
+
+Iarray = abs(psi_G_array).^2;
 
 end
 
