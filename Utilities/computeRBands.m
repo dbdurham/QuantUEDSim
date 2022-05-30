@@ -8,9 +8,7 @@ function RBands = computeRBands(IArray,tArray,tBands)
 nTests = size(IArray,3);
 nBands = size(tBands,1);
 
-Rend = 100*squeeze(...
-    sum(abs(IArray(:,:,1:end) - IArray(:,:,end)),1) ...
-    ./ sum(IArray(:,:,end),1));
+Rend = computeRStack(IArray);
 
 RBands = zeros(nBands,nTests);
 for iBand = 1:nBands

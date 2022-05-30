@@ -76,13 +76,9 @@ showIvtVsParam(IArray,tArray,peakNames,paramToTest,paramRange)
 
 %% Compute and plot DP errors vs thickness for each parameter result
 
-MSE = squeeze(mean(abs(diff(IArray,1,3)).^2,1));
-MPctE = 100*squeeze(mean(abs(diff(IArray,1,3))...
-    ./IArray(:,:,1:end-1),1));
-R = 100*squeeze(sum(abs(diff(IArray,1,3)),1) ...
-    ./ sum(IArray(:,:,1:end-1),1));
+MPctE = computeMPctEStack(IArray);
+R = computeRStack(IArray);
 showErrorsVsThickness(tArray,R,MPctE,paramToTest,paramRange);
-
 
 %% Compute and plot R for thickness bands
 
