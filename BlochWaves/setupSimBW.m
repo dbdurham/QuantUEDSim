@@ -19,10 +19,10 @@ Z = atoms(:,4); % Atomic number
 Vcryst = prod(cellDim); % unit cell volume (Angstroms^3)
 
 % Generate mesh of hkl
-hRange = [-26 26];
-kRange = [-26 26];
-lRange = [-2 2]; 
-[hkl,Ghkl,Gmag,dhkl] = generateReciprocalLattice(...
+hRange = [-50 50];
+kRange = [-50 50];
+lRange = [-5 5]; 
+[hkl,Ghkl,Gmag,dhkl,Gvec] = generateReciprocalLattice(...
     uvwInit,hRange,kRange,lRange);
 
 hLen = diff(hRange)+1;
@@ -46,7 +46,7 @@ U_G = real(U_G);
 % Store variables
 varsToStore = {'uRMS','E0','lambElec','sigma',...
     'atoms','cellDim','Z','lattice','Vcryst',...
-    'hkl','Ghkl','Gmag','dhkl',...
+    'hkl','Ghkl','Gmag','Gvec','dhkl',...
     'hRange','kRange','lRange','hLen','kLen','lLen',...
     'U_G_0K','U_G'};
 nVars = numel(varsToStore);
