@@ -21,7 +21,13 @@ plot(tArray.*0.1,IArray,'-')
 xlabel('Distance (nm)')
 ylabel('Beam intensity')
 
-% Map diffracted intensities onto 2D diffraction pattern 
-[IDiff,qxa,qya] = projectIntsToDP(IArray,GhklSel,sDiff);
+% Map diffracted intensities onto 2D diffraction pattern
+NDP = [32 32];
+pixelSize = sDiff.cellDim(1:2)./NDP;
+[qxa,qya] = makeFourierCoords(NDP,pixelSize);
+IDiff = projectIntsToDP(IArray,GhklSel,qxa,qya);
 % View the diffraction patterns
 StackViewerDiff(fftshift(fftshift(IDiff,1),2),tArray.*0.1)
+
+% % Test intensity extraction
+% IArrayRet = extractIntsFromDP(IDiff,qxa,qya,GhklSel);
