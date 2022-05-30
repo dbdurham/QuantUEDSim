@@ -18,17 +18,16 @@ end
 
 %% Perform simulations for varying params, extract ints vs thickness
 
-% paramToTest = 'cellMult';
-% paramRange = [1 2 4];
-% isWyckoffOpt = false;
-% 
-% paramToTest = 'potBound';
-% paramRange = [1 2 3 4 5];
-% isWyckoffOpt = false;
-% 
-paramToTest = 'imageSizeCell';
-paramRange = [64 128 256 512];
+paramToTest = 'GxyThresh';
+paramRange = [2 2.5 3 3.5 4];
 isWyckoffOpt = false;
+
+tic
+disp('Setting up...')
+sDiff = setupSimBW();
+toc
+
+GzThresh = 1*1.01/sDiff.cellDim(3);
 
 nTests = length(paramRange);
 
@@ -40,29 +39,32 @@ theta_y = 0; %rad
 IArray = zeros(nPeaks,nUCs,nTests);
 I0Array = zeros(nUCs,nTests);
 
-useGPU = false;
-
 for iTest = 1:nTests
-    % Setup simulation
-    options = struct;
-    options.(paramToTest) = paramRange(iTest);
+    % Update params
+    switch paramToTest
+        case 'GxyThresh'
+            GxyThresh = paramRange(iTest);
+        case 'GzThresh'
+            GzThresh = paramRange(iTest);
+    end
     
     rng(0) % fix random seed for comparison
     
     % Perform simulation
     tic
-    sDiff = setupMultisliceSim(options);
-    if useGPU
-        [EWlast,EWstore,sDiff] = calcDiffGPU(sDiff,coefs);
-        IDiff = double(abs(gather(EWstore)).^2);
-    else
-        [EWlast,EWstore,sDiff] = calcDiff(sDiff,coefs);
-        IDiff = double(abs(EWstore).^2);
+    disp(['Computing test # ' num2str(iTest)])
+    [IArraySel,~,hklSel,~] = calcIntsBW(theta_x,theta_y,nUCs,...
+        GxyThresh,GzThresh,sDiff);
+    for iPeak = 1:nPeaks
+        indPeak = find(hklTest(iPeak,1) == hklSel(:,1) ...
+            & hklTest(iPeak,2) == hklSel(:,2) ...
+            & hklTest(iPeak,3) == hklSel(:,3));
+        IArray(iPeak,:,iTest) = IArraySel(indPeak,:);
     end
-    I0Array(:,iTest) = IDiff(1,1,:);
-    GhklTest = computeScatteringVectors(hklTest,sDiff.Gvec);
-    IArray(:,:,iTest) = extractIntsFromDP(IDiff,...
-        sDiff.qxa,sDiff.qya,GhklTest);
+    indZero = find(0 == hklSel(:,1) ...
+            & 0 == hklSel(:,2) ...
+            & 0 == hklSel(:,3));
+    I0Array(:,iTest) = IArraySel(indZero,:);
     toc
 
 end
@@ -93,7 +95,7 @@ showRBands(RBands,tBands,paramRange,paramToTest);
 
 %% Plot % error in each peak for a certain setting
 
-testToShow = 2;
+testToShow = 1;
 
 showPctErrorPerPeak(IArray,tArray,testToShow,...
     peakNames,paramToTest,paramRange)
