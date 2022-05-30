@@ -3,11 +3,24 @@ function sDiff = setupSimBW()
 %   Detailed explanation goes here
 
 % Inputs
-E0 = 750e3; %eV
+E0 = 750e3; % eV beam kinetic energy
 uRMS = 0.0894; % 1D rms displacement across Bragg planes (Angstroms)
+GxyThresh = 4.5; % in-plane reciprocal space threshold (inv Angstroms)
+sThresh = 0.4; % Excitation error threshold (inv Angstroms)
 
+% Projected diffraction pattern sampling parameters
+cellMult = 2;
+imageSizeCell = 64;
+downSampFac = cellMult;
+
+% Beam physical constants
 lambElec = computeElectronWavelength(E0); % Angstroms
 sigma = computeInteractionParameter(E0); % rad/(V*Angstroms)
+
+% Diffraction pattern sampling
+imageSize = imageSizeCell.*ones(1,2); 
+pixelSize = cellMult*sDiff.cellDim(1:2)./imageSize;
+[qxa,qya] = makeFourierCoords(imageSize,pixelSize);
 
 
 %% 1. Generate crystal structure and reciprocal lattice
@@ -48,7 +61,8 @@ varsToStore = {'uRMS','E0','lambElec','sigma',...
     'atoms','cellDim','Z','lattice','Vcryst',...
     'hkl','Ghkl','Gmag','Gvec','dhkl',...
     'hRange','kRange','lRange','hLen','kLen','lLen',...
-    'U_G_0K','U_G'};
+    'U_G_0K','U_G','GxThresh','sThresh',...
+    'cellMult','imageSizeCell','downSampFac','qxa','qya'};
 nVars = numel(varsToStore);
 for iVar = 1:nVars
     [~] = evalc(['sDiff.' varsToStore{iVar} ' = ' varsToStore{iVar}]);

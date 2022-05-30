@@ -1,11 +1,9 @@
-function [Iarray,psi_G_array,hklSel,GhklSel] = calcIntsBW(theta1,theta2,nUC,...
-    GxyThresh,sThresh,sDiff)
+function [Iarray,psi_G_array,hklSel,GhklSel] = calcIntsBW(theta1,theta2,...
+    nUC,sDiff)
 %CALCDIFFBW Calculate diffracted intensities using Bloch Wave method
 %   theta1 = x component of sample tilt (rad)
 %   theta2 = y component (rad)
-%   GxyThresh = selection threshold on in-plane reciprocal lattice distance (inv
-%   Angstroms)
-%   sThresh = upper threshold on excitation error (inv Angstroms)
+%   nUC = number of unit cells to sample
 %   sDiff = setup struct
 %   NOTE: ASSUMES CENTROSYMMETRIC CRYSTAL
 

@@ -30,18 +30,18 @@ GhklTest = computeScatteringVectors(hklTest,sDiff.Gvec);
 
 % paramToTest = 'GxyThresh';
 % paramRange = [2 2.5 3 3.5 4 4.5 5];
-% sThresh = 0.4/sDiff.cellDim(3);
+% sDiff.sThresh = 0.4/sDiff.cellDim(3);
 
-paramToTest = 'sThresh';
-paramRange = [0.1 0.15 0.2 0.3 0.4 0.5 0.6]./sDiff.cellDim(3);
-GxyThresh = 4.5;
+% paramToTest = 'sThresh';
+% paramRange = [0.1 0.15 0.2 0.3 0.4 0.5 0.6]./sDiff.cellDim(3);
+% sDiff.GxyThresh = 4.5;
 
 nTests = length(paramRange);
 
 % Simulation parameters
 nUCs = 40; % number of sim cells
-theta_x = -0.1;
-theta_y = 0; %rad
+theta_x = 0;
+theta_y = 0.1; %rad
 
 IArray = zeros(nPeaks,nUCs,nTests);
 I0Array = zeros(nUCs,nTests);
@@ -51,9 +51,9 @@ for iTest = 1:nTests
     % Update params
     switch paramToTest
         case 'GxyThresh'
-            GxyThresh = paramRange(iTest);
+            sDiff.GxyThresh = paramRange(iTest);
         case 'sThresh'
-            sThresh = paramRange(iTest);
+            sDiff.sThresh = paramRange(iTest);
     end
     
     rng(0) % fix random seed for comparison
@@ -62,7 +62,7 @@ for iTest = 1:nTests
     tic
     disp(['Computing test # ' num2str(iTest)])
     [IArraySel,~,hklSel,GhklSel] = calcIntsBW(theta_x,theta_y,nUCs,...
-        GxyThresh,sThresh,sDiff);
+        sDiff);
     % Extract zero beam intensity
     indZero = find(0 == hklSel(:,1) ...
             & 0 == hklSel(:,2) ...
