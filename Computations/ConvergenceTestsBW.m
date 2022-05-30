@@ -85,7 +85,7 @@ showIvtVsParam(IArray,tArray,peakNames,paramToTest,paramRange)
 
 %% View the last generated diffraction pattern stack
 
-StackViewerDiff(fftshift(fftshift(IDiff,1),2),tArray*0.1);
+StackViewerDiff(fftshift(fftshift(IDiff,1),2),tArray);
 
 %% Compute and plot DP errors vs thickness for each parameter result
 
