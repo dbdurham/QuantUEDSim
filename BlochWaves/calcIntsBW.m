@@ -33,16 +33,16 @@ for ii = 1:3
         -repmat(hklSel(:,ii)',[N 1]);
 end
 
-if any(hklDiff(:,:,1) > sDiff.hRange(2) ...
-        | hklDiff(:,:,1) < sDiff.hRange(1),'all')
+if any(any(hklDiff(:,:,1) > sDiff.hRange(2) ...
+        | hklDiff(:,:,1) < sDiff.hRange(1)))
     disp('h out of range, need more h points')
 end
-if any(hklDiff(:,:,2) > sDiff.kRange(2) ...
-        | hklDiff(:,:,2) < sDiff.kRange(1),'all')
+if any(any(hklDiff(:,:,2) > sDiff.kRange(2) ...
+        | hklDiff(:,:,2) < sDiff.kRange(1)))
     disp('k out of range, need more k points')
 end
-if any(hklDiff(:,:,3) > sDiff.lRange(2) ...
-        | hklDiff(:,:,3) < sDiff.lRange(1),'all')
+if any(any(hklDiff(:,:,3) > sDiff.lRange(2) ...
+        | hklDiff(:,:,3) < sDiff.lRange(1)))
     disp('l out of range, need more l points')
 end
 
