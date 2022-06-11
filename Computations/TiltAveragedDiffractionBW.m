@@ -74,9 +74,12 @@ for iIter = 1:nIter
         sDiff.qxaStore,sDiff.qyaStore,GhklTest);
 end
 
-%% Plot intensity vs thickness for each peak as function of parameter
+%% Plot intensity vs thickness for each peak vs iteration
 
 showIvtVsParam(IArray,tArray,peakNames,'Iterations',1:nIter)
+
+%% Plot intensity vs thickness for the max iteration
+showIvt(IArray(:,:,end),I0Array,tArray,peakNames);
 
 %% Compute and plot R for thickness bands
 
