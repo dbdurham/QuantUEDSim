@@ -17,11 +17,6 @@ downSampFac = cellMult;
 lambElec = computeElectronWavelength(E0); % Angstroms
 sigma = computeInteractionParameter(E0); % rad/(V*Angstroms)
 
-% Diffraction pattern sampling
-imageSize = imageSizeCell.*ones(1,2); 
-pixelSize = cellMult*sDiff.cellDim(1:2)./imageSize;
-[qxa,qya] = makeFourierCoords(imageSize,pixelSize);
-
 
 %% 1. Generate crystal structure and reciprocal lattice
 
@@ -42,6 +37,13 @@ hLen = diff(hRange)+1;
 kLen = diff(kRange)+1;
 lLen = diff(lRange)+1;
 
+% Diffraction pattern sampling
+imageSize = imageSizeCell.*ones(1,2); 
+storeSize = imageSize./downSampFac;
+pixelSize = cellMult*cellDim(1:2)./imageSize;
+[qxa,qya] = makeFourierCoords(imageSize,pixelSize);
+[qxaStore,qyaStore] = makeFourierCoords(storeSize,pixelSize*downSampFac);
+
 %% 2. Compute library of 3D specimen potential Fourier components U_G
 
 % Compute structure factors
@@ -61,8 +63,10 @@ varsToStore = {'uRMS','E0','lambElec','sigma',...
     'atoms','cellDim','Z','lattice','Vcryst',...
     'hkl','Ghkl','Gmag','Gvec','dhkl',...
     'hRange','kRange','lRange','hLen','kLen','lLen',...
-    'U_G_0K','U_G','GxThresh','sThresh',...
-    'cellMult','imageSizeCell','downSampFac','qxa','qya'};
+    'U_G_0K','U_G','GxyThresh','sThresh',...
+    'cellMult','imageSizeCell','imageSize',...
+    'downSampFac','qxa','qya',...
+    'storeSize','qxaStore','qyaStore'};
 nVars = numel(varsToStore);
 for iVar = 1:nVars
     [~] = evalc(['sDiff.' varsToStore{iVar} ' = ' varsToStore{iVar}]);
