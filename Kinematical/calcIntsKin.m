@@ -4,28 +4,22 @@ function I = calcIntsKin(theta1,theta2,nUC,sDiff)
 %   theta2 = y component (rad)
 %   sDiff = setup struct
 
-% Unpack input variable structure
-fieldNames = fieldnames(sDiff);
-nFields = numel(fieldNames);
-for iField = 1:nFields
-    [~] = evalc([fieldNames{iField} ' = sDiff.' fieldNames{iField}]);
-end
-
-t = (1:nUC)*cellDim(3);
+t = (1:nUC)*sDiff.cellDim(3);
 
 % Compute excitation errors (inv Angstroms)
-s_G = computeExcitationError(theta1,theta2,Ghkl,lambElec); 
+s_G = computeExcitationError(theta1,theta2,sDiff.Ghkl,sDiff.lambElec); 
 
 % Calculate extinction distances (Angstroms)
-braggAngle = asin(lambElec./(2*dhkl)); % Bragg angle (rad)
-extDist = pi.*Vcryst.*cos(braggAngle)./(lambElec.*abs(Fhkl));
+braggAngle = asin(sDiff.lambElec./(2*sDiff.dhkl)); % Bragg angle (rad)
+extDist = pi.*sDiff.Vcryst.*cos(braggAngle)...
+    ./(sDiff.lambElec.*abs(sDiff.Fhkl));
 
 % Calculate diffracted intensities vs thickness
 I = (sin(pi*s_G*t)./(s_G.*extDist)).^2;
 % Handle zero-order beam (excitation error = 0)
 I(s_G==0,:) = (pi*t./extDist(s_G==0)).^2;
 % Apply DWF
-[~,DWInt] = computeDWF(uRMS,1,Gmag);
+[~,DWInt] = computeDWF(sDiff.uRMS,1,sDiff.Gmag);
 I = I.*DWInt;
 
 end
