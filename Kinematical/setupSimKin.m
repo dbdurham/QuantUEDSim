@@ -7,6 +7,12 @@ function sDiff = setupSimKin()
 E0 = 750e3; %eV
 uRMS = 0.0894; % 1D rms displacement perpendicular to Bragg planes (Angstroms)
 
+% Projected diffraction pattern sampling parameters
+cellMult = 2;
+imageSizeCell = 64;
+downSampFac = cellMult;
+
+% Beam physical constants
 lambElec = computeElectronWavelength(E0); % Angstroms
 gamma = computeLorentzFactor(E0); % 
 
@@ -22,15 +28,19 @@ Vcryst = prod(cellDim); % Unit cell volume (Angstroms^3)
 % Generate mesh of hkl
 hRange = [-8 8];
 kRange = [-8 8];
-lRange = [-1 1];
+lRange = [-5 5];
 
-[hkl,Ghkl,Gmag,dhkl] = generateReciprocalLattice(...
+[hkl,Ghkl,Gmag,dhkl,Gvec] = generateReciprocalLattice(...
     uvwInit,hRange,kRange,lRange);
 
-%% Calculate structure factors
-% NOTE: scattering factors assumed independent of beam energy... an
-% approximation often made for relativistic electrons
+% Diffraction pattern sampling
+imageSize = imageSizeCell.*ones(1,2); 
+storeSize = imageSize./downSampFac;
+pixelSize = cellMult*cellDim(1:2)./imageSize;
+[qxa,qya] = makeFourierCoords(imageSize,pixelSize);
+[qxaStore,qyaStore] = makeFourierCoords(storeSize,pixelSize*downSampFac);
 
+%% Calculate structure factors
 Fhkl = computeStructureFactors(lattice,Z,hkl,Gmag,E0,...
     'Moliere',false);
 
@@ -38,9 +48,12 @@ Fhkl = computeStructureFactors(lattice,Z,hkl,Gmag,E0,...
 % Store variables
 varsToStore = {'uRMS','E0','lambElec','gamma',...
     'atoms','cellDim','Z','lattice','Vcryst',...
-    'hkl','Ghkl','Gmag','dhkl',...
+    'hkl','Ghkl','Gmag','dhkl','Gvec',...
     'hRange','kRange','lRange',...
-    'Fhkl'};
+    'Fhkl',...
+    'cellMult','imageSizeCell','imageSize',...
+    'downSampFac','qxa','qya',...
+    'storeSize','qxaStore','qyaStore'};
 nVars = numel(varsToStore);
 for iVar = 1:nVars
     [~] = evalc(['sDiff.' varsToStore{iVar} ' = ' varsToStore{iVar}]);
