@@ -74,10 +74,13 @@ end
 GhklTest = computeScatteringVectors(hklTest,sDiff.Gvec);
 
 IArray = zeros(nPeaks,nUC,nIter);
-iTheta = nTheta;
+I0Array = zeros(1,nUC,nIter);
+iTheta = 40;
 for iIter = 1:nIter
     IArray(:,:,iIter) = extractIntsFromDP(Ilib(:,:,:,iTheta,iIter),...
         sDiff.qxaStore,sDiff.qyaStore,GhklTest);
+    I0Array(:,:,iIter) = extractIntsFromDP(Ilib(:,:,:,iTheta,iIter),...
+        sDiff.qxaStore,sDiff.qyaStore,[0 0 0]);
 end
 
 %% Plot intensity vs thickness for each peak vs iteration
@@ -85,7 +88,7 @@ end
 showIvtVsParam(IArray,tArray,peakNames,'Iterations',1:nIter)
 
 %% Plot intensity vs thickness for the max iteration
-showIvt(IArray(:,:,end),I0Array,tArray,peakNames);
+showIvt(IArray(:,:,end),I0Array(:,:,end),tArray,peakNames);
 
 %% Compute and plot R for thickness bands
 
