@@ -16,16 +16,12 @@ GthetaSel = atan2(GhklSel(:,2),GhklSel(:,1));
 GxProj = GmagSel.*cos(GthetaSel);
 GyProj = GmagSel.*sin(GthetaSel);
 % identify indices to fill in patterns
-indxProj = zeros(N,1);
-indyProj = zeros(N,1);
 qx = qxa(:,1);
 qy = qya(1,:);
-for iBeam = 1:N
-    [~,indxProj(iBeam)] = min(abs(GxProj(iBeam)-qx));
-    [~,indyProj(iBeam)] = min(abs(GyProj(iBeam)-qy));
-end
+[~,indxProj] = min(abs(GxProj-qx'),[],2);
+[~,indyProj] = min(abs(GyProj-qy),[],2);
 
-% Accumulte diffracted intensities on the generated grid
+% Accumulate diffracted intensities on the generated grid
 Nx = numel(qx);
 Ny = numel(qy);
 IDiff = zeros(Nx,Ny,nUC);
