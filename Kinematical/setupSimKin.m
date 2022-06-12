@@ -5,12 +5,12 @@ function sDiff = setupSimKin()
 
 % Input variables
 E0 = 750e3; %eV
-uRMS = 0.0894; % 1D rms displacement perpendicular to Bragg planes (Angstroms)
+uRMS = 0; % 1D rms displacement perpendicular to Bragg planes (Angstroms)
 
 % Projected diffraction pattern sampling parameters
 cellMult = 2;
-imageSizeCell = 64;
-downSampFac = cellMult;
+imageSizeCell = 32;
+downSampFac = cellMult*2;
 
 % Beam physical constants
 lambElec = computeElectronWavelength(E0); % Angstroms
@@ -28,7 +28,7 @@ Vcryst = prod(cellDim); % Unit cell volume (Angstroms^3)
 % Generate mesh of hkl
 hRange = [-8 8];
 kRange = [-8 8];
-lRange = [-5 5];
+lRange = [0 0];
 
 [hkl,Ghkl,Gmag,dhkl,Gvec] = generateReciprocalLattice(...
     uvwInit,hRange,kRange,lRange);
