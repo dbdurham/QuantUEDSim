@@ -3,18 +3,24 @@
 sDiff = setupSimBW();
 
 nTheta = 64;
-sigmaThetaMax = 0.1; % rad
+sigmaThetaMax = 0.16; % rad
 sigmaThetaSamp = (sigmaThetaMax/nTheta)*(1:nTheta);
 
-nUC = 40;
-nIter = 5;
+nUC = 100;
+nIter = 9;
+iStart = 8;
 
 Ilib = computeTiltAveragedDiffraction(sigmaThetaSamp,nUC,nIter,...
-    'Bloch Waves',sDiff);
+    'Bloch Waves',sDiff,Ilib,iStart);
 
 tArray = 0.1*sDiff.cellDim(3)*(1:nUC);
 
 StackViewerDiff(fftshift(fftshift(Ilib(:,:,:,end,5),1),2),tArray)
+
+[savefile,savepath] = uiputfile('*.mat');
+save([savepath savefile],'Ilib','sDiff',...
+    'nTheta','sigmaThetaMax','sigmaThetaSamp',...
+    'nUC','nIter','tArray');
 
 %% Visualize resulting intensities and R factors
 
