@@ -14,12 +14,8 @@ ki = kiMag.*[cos(thetaY)*sin(thetaX) ...
 betaAngle = acos(cos(thetaX)*cos(thetaY)); % Angle between incident beam and surface normal (rad)
 % (0 at normal incidence)
 
-nOrders = size(Ghkl,1);
-excitationError = zeros(nOrders,1); % Excitation error (Angstroms^-1)
-for ii = 1:nOrders
-    excitationError(ii)  = -dot(Ghkl(ii,:),2*ki+Ghkl(ii,:))...
-        ./(2*norm(ki+Ghkl(ii,:))*cos(betaAngle));
-end
+excitationError = -dot(Ghkl,2*ki+Ghkl,2)...
+    ./ vecnorm(ki+Ghkl,2,2)*cos(betaAngle);
 
 end
 
