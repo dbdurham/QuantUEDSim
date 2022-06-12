@@ -14,6 +14,7 @@ function [Ilib,epsLib] = computeTiltAveragedDiffraction(...
 %   iStart = Iteration from which to continue the integration
 
 sigmaThetaMax = max(sigmaThetaSamp);
+nTheta = numel(sigmaThetaSamp);
 symmDPs = true;
 
 if nargin > 5
@@ -22,7 +23,6 @@ if nargin > 5
     iStart = varargin{2};
 else
     % Initialize libraries
-    nTheta = numel(sigmaThetaSamp);
     Ilib = zeros([sDiff.storeSize,...
         nUC,...
         nTheta,...
