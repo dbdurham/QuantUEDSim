@@ -61,6 +61,7 @@ for iIter = iStart:iEnd
             lowerTheta,3*sigmaThetaMax,Ilib(:,:,:,:,iIter-1),iIter);
     end
     
+    
     if symmDPs
         % Apply vertical mirror
         Istack2 = (Ilib(:,:,:,:,iIter)...

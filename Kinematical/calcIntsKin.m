@@ -7,7 +7,9 @@ function I = calcIntsKin(theta1,theta2,nUC,sDiff)
 t = (1:nUC)*sDiff.cellDim(3);
 
 % Compute excitation errors (inv Angstroms)
+
 s_G = computeExcitationError(theta1,theta2,sDiff.Ghkl,sDiff.lambElec); 
+
 
 % Calculate extinction distances (Angstroms)
 braggAngle = asin(sDiff.lambElec./(2*sDiff.dhkl)); % Bragg angle (rad)

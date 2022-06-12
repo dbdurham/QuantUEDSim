@@ -6,7 +6,7 @@ function sDiff = setupSimBW()
 E0 = 750e3; % eV beam kinetic energy
 uRMS = 0.0894; % 1D rms displacement across Bragg planes (Angstroms)
 GxyThresh = 4.5; % in-plane reciprocal space threshold (inv Angstroms)
-sThresh = 0.4; % Excitation error threshold (inv Angstroms)
+sThresh = 0.1; % Excitation error threshold (inv Angstroms)
 
 % Projected diffraction pattern sampling parameters
 cellMult = 2;
@@ -29,7 +29,7 @@ Vcryst = prod(cellDim); % unit cell volume (Angstroms^3)
 % Generate mesh of hkl
 hRange = [-50 50];
 kRange = [-50 50];
-lRange = [-5 5]; 
+lRange = [-30 30]; 
 [hkl,Ghkl,Gmag,dhkl,Gvec] = generateReciprocalLattice(...
     uvwInit,hRange,kRange,lRange);
 
