@@ -38,7 +38,9 @@ imageSize = imageSizeCell.*ones(1,2);
 storeSize = imageSize./downSampFac;
 pixelSize = cellMult*cellDim(1:2)./imageSize;
 [qxa,qya] = makeFourierCoords(imageSize,pixelSize);
-[qxaStore,qyaStore] = makeFourierCoords(storeSize,pixelSize*downSampFac);
+% Downsampling
+[qxaStore,qyaStore,storeMask] = downsampleFourierCoords(...
+    qxa,qya,downSampFac);
 
 %% Calculate structure factors
 Fhkl = computeStructureFactors(lattice,Z,hkl,Gmag,E0,...

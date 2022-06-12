@@ -42,7 +42,8 @@ imageSize = imageSizeCell.*ones(1,2);
 storeSize = imageSize./downSampFac;
 pixelSize = cellMult*cellDim(1:2)./imageSize;
 [qxa,qya] = makeFourierCoords(imageSize,pixelSize);
-[qxaStore,qyaStore] = makeFourierCoords(storeSize,pixelSize*downSampFac);
+[qxaStore,qyaStore,storeMask] = downsampleFourierCoords(...
+    qxa,qya,downSampFac);
 
 %% 2. Compute library of 3D specimen potential Fourier components U_G
 
