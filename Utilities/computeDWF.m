@@ -7,8 +7,8 @@ function [B,DWFInt,DWFAmp] = computeDWF(urms,udim,Gmag)
 %   Gmag - Reciprocal lattice distances 
 
 B = 8*pi^2*urms^2/udim;
-DWFInt = exp(-B*Gmag.^2/4);
-DWFAmp = exp(-B*Gmag.^2/2);
+DWFInt = exp(-B*Gmag.^2/2);
+DWFAmp = exp(-B*Gmag.^2/4);
 
 end
 
