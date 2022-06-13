@@ -5,13 +5,13 @@ function sDiff = setupSimBW()
 % Inputs
 E0 = 750e3; % eV beam kinetic energy
 uRMS = 0.0894; % 1D rms displacement across Bragg planes (Angstroms)
-GxyThresh = 4.5; % in-plane reciprocal space threshold (inv Angstroms)
+GxyThresh = 3; % in-plane reciprocal space threshold (inv Angstroms)
 sThresh = 0.1; % Excitation error threshold (inv Angstroms)
 
 % Projected diffraction pattern sampling parameters
 cellMult = 2;
-imageSizeCell = 64;
-downSampFac = cellMult;
+imageSizeCell = 32;
+downSampFac = cellMult*2;
 
 % Beam physical constants
 lambElec = computeElectronWavelength(E0); % Angstroms
