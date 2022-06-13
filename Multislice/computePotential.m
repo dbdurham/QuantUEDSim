@@ -85,7 +85,7 @@ for a0 = 1:sDiff.numSlices
                     % Normalize
                     DWFilter = abs(DWFilter ./ abs(DWFilter(1,1)));
                 else
-                    [~,~,DWFAmp] = computeDWF(sDiff.uRMS,1,sDiff.q2Pot);
+                    [~,~,DWFAmp] = computeDWF(sDiff.uRMS,1,sqrt(sDiff.q2Pot));
                     DWFilter = DWFAmp;
                 end
             else
