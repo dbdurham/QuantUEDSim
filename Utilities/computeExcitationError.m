@@ -15,7 +15,7 @@ betaAngle = acos(cos(thetaX)*cos(thetaY)); % Angle between incident beam and sur
 % (0 at normal incidence)
 
 excitationError = -dot(Ghkl,2*ki+Ghkl,2)...
-    ./ vecnorm(ki+Ghkl,2,2)*cos(betaAngle);
+    ./ (2*vecnorm(ki+Ghkl,2,2)*cos(betaAngle));
 
 end
 
