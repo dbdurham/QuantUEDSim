@@ -8,10 +8,13 @@ sigmaThetaSamp = (sigmaThetaMax/nTheta)*(1:nTheta);
 
 nUC = 100;
 nIter = 9;
-iStart = 8;
 
+% Compute the first set of tilt-averaged patterns
 Ilib = computeTiltAveragedDiffraction(sigmaThetaSamp,nUC,nIter,...
-    'Bloch Waves',sDiff,Ilib,iStart);
+    'Bloch Waves',sDiff);
+% Further converge the smallest tilt-range patterns
+Ilib = computeTiltAveragedDiffraction(sigmaThetaSamp,nUC,10,...
+    'Bloch Waves',sDiff,Ilib,10,4);
 
 tArray = 0.1*sDiff.cellDim(3)*(1:nUC);
 

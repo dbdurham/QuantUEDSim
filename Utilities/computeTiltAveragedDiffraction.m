@@ -30,6 +30,15 @@ else
     iStart = 1;
 end
 
+if nargin > 7
+    % extend computation of a subset of the tilt range
+    tiltSubFactor = varargin{3};
+else
+    tiltSubFactor = 1;
+end
+indsThetaUpdate = 1:nTheta/tiltSubFactor; % all by default, subset if desired
+indsThetaKeep = nTheta/tiltSubFactor+1:nTheta;
+
 switch diffMethod
     case 'Kinematical'
         funcDiff = @(theta1,theta2) calcDiffKin(theta1,theta2,nUC,sDiff);        
@@ -40,7 +49,7 @@ switch diffMethod
 end
 
 func = @(theta1,theta2) computeWeightedDiffStack(...
-    theta1,theta2,sigmaThetaSamp,symmDPs,funcDiff);
+    theta1,theta2,sigmaThetaSamp(indsThetaUpdate),symmDPs,funcDiff);
 
 iEnd = nIter;
 
@@ -48,17 +57,28 @@ iEnd = nIter;
 if symmDPs
     lowerTheta = 0;
 else
-    lowerTheta = -3*sigmaThetaMax;
+    lowerTheta = -3*sigmaThetaMax/tiltSubFactor;
 end
+upperTheta = 3*sigmaThetaMax/tiltSubFactor;
+
+iterSub = log2(tiltSubFactor);
 
 for iIter = iStart:iEnd
     tic
     if iIter == 1
-        Ilib(:,:,:,:,1) = extendTrapz2D(func,lowerTheta,3*sigmaThetaMax,...
-            lowerTheta,3*sigmaThetaMax,Ilib(:,:,:,:,1),iIter);
+        Ilib(:,:,:,indsThetaUpdate,1) = extendTrapz2D(func,...
+            lowerTheta,upperTheta,...
+            lowerTheta,upperTheta,...
+            Ilib(:,:,:,indsThetaUpdate,1),...
+            1);
     else
-        Ilib(:,:,:,:,iIter) = extendTrapz2D(func,lowerTheta,3*sigmaThetaMax,...
-            lowerTheta,3*sigmaThetaMax,Ilib(:,:,:,:,iIter-1),iIter);
+        Ilib(:,:,:,indsThetaUpdate,iIter) = extendTrapz2D(func,...
+            lowerTheta,upperTheta,...
+            lowerTheta,upperTheta,...
+            Ilib(:,:,:,indsThetaUpdate,iIter-1),...
+            iIter-iterSub);
+        Ilib(:,:,:,indsThetaKeep,iIter) = ...
+            Ilib(:,:,:,indsThetaKeep,iIter-1);
     end
     
     
@@ -87,9 +107,9 @@ for iIter = iStart:iEnd
     if iIter > 1
         % Fractional change as function of thickness and tilt spread
         epsLib = squeeze(sum(sum(abs(...
-            Ilib(:,:,:,:,iIter) - Ilib(:,:,:,:,iIter-1)),1),2)...
-            ./ sum(sum(Ilib(:,:,:,:,iIter-1),1),2));
-        disp(['Fractional change in diff stack at max spread: ' num2str(mean(epsLib(:,end)))])
+            Ilib(:,:,:,indsThetaUpdate(end),iIter) - Ilib(:,:,:,indsThetaUpdate(end),iIter-1)),1),2)...
+            ./ sum(sum(Ilib(:,:,:,indsThetaUpdate(end),iIter-1),1),2));
+        disp(['Fractional change in diff stack at max spread: ' num2str(mean(epsLib))])
     end
     
 end
