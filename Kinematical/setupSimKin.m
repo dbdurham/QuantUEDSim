@@ -28,7 +28,7 @@ Vcryst = prod(cellDim); % Unit cell volume (Angstroms^3)
 % Generate mesh of hkl
 hRange = [-8 8];
 kRange = [-8 8];
-lRange = [0 0];
+lRange = [-1 1];
 
 [hkl,Ghkl,Gmag,dhkl,Gvec] = generateReciprocalLattice(...
     uvwInit,hRange,kRange,lRange);

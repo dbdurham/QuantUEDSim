@@ -11,9 +11,11 @@ load([pathname filename])
 [filename, pathname] = uigetfile('*.mat','Load DP library');
 load([pathname filename])
 
+sDiff1 = sDiff;
 Ilib1 = Ilib;
+iEnd = size(Ilib1,5);
 
-tArray = (1:nUC).*0.1*sDiff.cellDim(3);
+tArray = (1:nUC).*0.1*sDiff1.cellDim(3);
 
 % View pattern stack for max tilt spread
 StackViewerDiff(fftshift(fftshift(Ilib1(:,:,:,end,iEnd),1),2),tArray)
@@ -25,11 +27,18 @@ Nx = size(Ilib1,2);
 nUC = size(Ilib1,3);
 nTheta = size(Ilib1,4);
 
+applyDWF = true;
+uRMS = 0.0894;
+[~,DWFInt] = computeDWF(uRMS,1,GmagExp);
+
 Rarray = zeros(nUC,nTheta);
 IArrayExp = repmat(intsExp,[1,nUC]);
 for iTheta = 1:nTheta
     IArraySim1 = extractIntsFromDP(Ilib1(:,:,:,iTheta,iEnd),...
-        sDiff.qxaStore,sDiff.qyaStore,GhklExp);
+        sDiff1.qxaStore,sDiff1.qyaStore,GhklExp);
+    if applyDWF
+        IArraySim1 = IArraySim1.*DWFInt;
+    end
     Rstack = computeRStack(cat(3,...
         IArraySim1,IArrayExp));
     Rarray(:,iTheta) = Rstack(:,1);
@@ -37,7 +46,7 @@ end
 
 cmap = violetFire.^0.5;
 
-figure;
+figure('Position',[200 200 280 200]);
 imagesc(sigmaThetaSamp([1 end])*1e3,...
     tArray([1 end]),...
     Rarray);
@@ -46,7 +55,7 @@ ylabel('Thickness (nm)')
 title('R_{exp - sim} (%)')
 colormap(cmap)
 colorbar()
-caxis([0 60])
+caxis([0 50])
 set(gca,'ydir','normal')
 
 [~,indMin] = min(Rarray(:));
@@ -58,7 +67,7 @@ tMin = tArray(subMin1);
 hold on
 plot(sigmaThetaMin,tMin,...
     'o','Color',[0 0.5 0],...
-    'MarkerSize',12,'LineWidth',1.5)
+    'MarkerSize',8,'LineWidth',1)
 
 disp(['Best-fit thickness (nm): ' num2str(tMin,3) ])
 disp(['Best-fit RMS tilt spread (mrad): ' num2str(sigmaThetaMin,3)])
@@ -70,12 +79,12 @@ iTheta = subMin2;
 
 % Extract sim intensities
 IArraySim1 = extractIntsFromDP(Ilib1(:,:,:,iTheta,iEnd),...
-        sDiff.qxaStore,sDiff.qyaStore,GhklExp);
+        sDiff1.qxaStore,sDiff1.qyaStore,GhklExp);
 intsSim = IArraySim1(:,iUC);
 
 % Plot intensity vs thickness for the max iteration
 I0ArraySim1 = extractIntsFromDP(Ilib1(:,:,:,iTheta,iEnd),...
-        sDiff.qxaStore,sDiff.qyaStore,[0 0 0]);
+        sDiff1.qxaStore,sDiff1.qyaStore,[0 0 0]);
 showIvt(IArraySim1,I0ArraySim1,tArray,peakNames);
 
 % Adjust scale for best fit
@@ -108,28 +117,30 @@ axis square
 
 [filename, pathname] = uigetfile('*.mat','Load DP library');
 load([pathname filename])
+sDiff2 = sDiff;
 Ilib2 = Ilib;
-tArray2 = (1:nUC).*0.1*sDiff.cellDim(3);
+tArray2 = (1:nUC).*0.1*sDiff1.cellDim(3);
+iEnd2 = size(Ilib2,5);
 
 % View pattern stack for max tilt spread
-StackViewerDiff(fftshift(fftshift(Ilib2(:,:,:,end,iEnd),1),2),tArray2)
+StackViewerDiff(fftshift(fftshift(Ilib2(:,:,:,end,iEnd2),1),2),tArray2)
 
 %% Plot intensity vs thickness for max iteration
 
-IArraySim2 = extractIntsFromDP(Ilib2(:,:,:,iTheta,iEnd),...
-        sDiff.qxaStore,sDiff.qyaStore,GhklExp);
-I0ArraySim2 = extractIntsFromDP(Ilib2(:,:,:,iTheta,iEnd),...
-        sDiff.qxaStore,sDiff.qyaStore,[0 0 0]);
+IArraySim2 = extractIntsFromDP(Ilib2(:,:,:,iTheta,iEnd2),...
+        sDiff2.qxaStore,sDiff2.qyaStore,GhklExp);
+I0ArraySim2 = extractIntsFromDP(Ilib2(:,:,:,iTheta,iEnd2),...
+        sDiff2.qxaStore,sDiff2.qyaStore,[0 0 0]);
 showIvt(IArraySim2,I0ArraySim2,tArray,peakNames);
 
 %% Generate R map comparing the two simulated datasets
 
 Rarray = zeros(nUC,nTheta);
 for iTheta = 1:nTheta
-    IArraySim2 = extractIntsFromDP(Ilib2(:,:,:,iTheta,iEnd),...
-        sDiff.qxaStore,sDiff.qyaStore,GhklExp);
+    IArraySim2 = extractIntsFromDP(Ilib2(:,:,:,iTheta,iEnd2),...
+        sDiff2.qxaStore,sDiff2.qyaStore,GhklExp);
     IArraySim1 = extractIntsFromDP(Ilib1(:,:,:,iTheta,iEnd),...
-        sDiff.qxaStore,sDiff.qyaStore,GhklExp);
+        sDiff1.qxaStore,sDiff1.qyaStore,GhklExp);
     Rstack = computeRStack(cat(3,...
         IArraySim1,IArraySim2));
     Rarray(:,iTheta) = Rstack(:,1);
@@ -146,7 +157,7 @@ ylabel('Thickness (nm)')
 title('R_{sim2 - sim1} (%)')
 colormap(cmap)
 colorbar()
-caxis([0 60])
+caxis([0 100])
 set(gca,'ydir','normal')
 
 %% UPDATE OR REMOVE THE CODE BELOW 

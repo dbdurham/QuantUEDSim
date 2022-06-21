@@ -62,15 +62,12 @@ Cvecsinv = conj(Cvecs');
 
 %% Compute exit wave components
 % Initial condition (plane wave)
-
 psiInit_G = zeros(N,1);
 psiInit_G(hklSel(:,1)==0 & hklSel(:,2)==0 & hklSel(:,3)==0) = 1;
 
-gam = diag(eigvals)/(2*k0z); % Inverse Angstroms
-
+gamVec = diag(eigvals)/(2*k0z); % Inverse Angstroms
 RHS = Cvecsinv*psiInit_G;
-
-psi_G = @(z) Cvecs*(exp(2i*pi*gam*z).*RHS);
+psi_G = @(z) Cvecs*(exp(2i*pi*gamVec*z).*RHS);
 
 dz = sDiff.cellDim(3);
 zTest = (1:nUC)*dz;

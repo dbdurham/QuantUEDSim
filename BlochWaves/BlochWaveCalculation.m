@@ -4,7 +4,7 @@
 sDiff = setupSimBW;
 
 % Inputs for calculation
-theta1 = 0.1; % rad, x component of tilt
+theta1 = 0; % rad, x component of tilt
 theta2 = 0; % rad, y component of tilt
 nUC = 100; % Number of unit cells to simulate
 

@@ -64,16 +64,16 @@ GhklTest = computeScatteringVectors(hklTest,sDiff.Gvec);
 % paramRange = [2 2.5 3 3.5 4 4.5 5];
 % sDiff.sThresh = 0.4/sDiff.cellDim(3);
 
-% paramToTest = 'sThresh';
-% paramRange = [0.1 0.15 0.2 0.3 0.4 0.5 0.6]./sDiff.cellDim(3);
-% sDiff.GxyThresh = 4.5;
+paramToTest = 'sThresh';
+paramRange = 2.*[0.1 0.15 0.2 0.3 0.4 0.5]./sDiff.cellDim(3);
+sDiff.GxyThresh = 4.5;
 
 nTests = length(paramRange);
 
 % Simulation parameters
 nUCs = 40; % number of sim cells
 theta_x = 0;
-theta_y = 0.16; %rad
+theta_y = 0; %rad
 
 IArray = zeros(nPeaks,nUCs,nTests);
 I0Array = zeros(nUCs,nTests);
@@ -95,6 +95,7 @@ for iTest = 1:nTests
     disp(['Computing test # ' num2str(iTest)])
     [IArraySel,~,hklSel,GhklSel] = calcIntsBW(theta_x,theta_y,nUCs,...
         sDiff);
+    toc
     % Extract zero beam intensity
     indZero = find(0 == hklSel(:,1) ...
             & 0 == hklSel(:,2) ...
@@ -107,7 +108,6 @@ for iTest = 1:nTests
     IDiff = projectIntsToDP(IArraySel,GhklSel,qxa,qya);
     % Extract diffracted ints being tested
     IArray(:,:,iTest) = extractIntsFromDP(IDiff,qxa,qya,GhklTest);
-    toc
 
 end
 

@@ -4,7 +4,7 @@ function showIvt(IArray,I0Array,tArray,peakNames)
 
 nPeaks = size(IArray,1);
 
-figure;
+figure('Position',[100 100 350 300]);
 subplot(2,1,1)
 plot(tArray,I0Array.^0.5,'k-','LineWidth',1.5)
 xticks([])

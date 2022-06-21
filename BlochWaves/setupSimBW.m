@@ -1,12 +1,16 @@
-function sDiff = setupSimBW()
+function sDiff = setupSimBW(options)
 %SETUPSIMBW Set up the Bloch Wave calculation
 %   Detailed explanation goes here
 
 % Inputs
-E0 = 750e3; % eV beam kinetic energy
-uRMS = 0.0894; % 1D rms displacement across Bragg planes (Angstroms)
-GxyThresh = 3; % in-plane reciprocal space threshold (inv Angstroms)
+E0 = 750e3; % eV beam kinetic energy    
+uRMS = 0.1033; % 1D rms displacement across Bragg planes (Angstroms)
+GxyThresh = 4.5; % in-plane reciprocal space threshold (inv Angstroms)
 sThresh = 0.1; % Excitation error threshold (inv Angstroms)
+
+if ~isempty(options) && isfield(options,'uRMS')
+    uRMS = options.uRMS;
+end
 
 % Projected diffraction pattern sampling parameters
 cellMult = 2;

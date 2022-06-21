@@ -73,7 +73,7 @@ end
 GhklTest = computeScatteringVectors(hklTest,sDiff.Gvec);
 
 IArray = zeros(nPeaks,nUC,nIter);
-iTheta = nTheta;
+iTheta = 1;
 for iIter = 1:nIter
     IArray(:,:,iIter) = extractIntsFromDP(Ilib(:,:,:,iTheta,iIter),...
         sDiff.qxaStore,sDiff.qyaStore,GhklTest);
