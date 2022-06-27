@@ -1,4 +1,4 @@
-function [EW,EWstore,sDiff,IntStore] = calcDiff(sDiff,coefs,expPot)
+function [EW,EWstore,sDiff] = calcDiff(sDiff,coefs,expPot)
 
 % Colin Ophus - 2020 April
 % Modified by Dan Durham and Khalid Siddiqui
@@ -48,29 +48,12 @@ numSlices = sDiff.numSlices;
 % elements containing the thicknesses of each slice
 t = reshape(sDiff.sliceThickness,...
         [1 1 length(sDiff.sliceThickness)]);
-propType = 'Parabolic';
-switch propType
-    case 'Parabolic'
-        sDiff.prop = exp( ...
-            sDiff.propConst ...
-            + (2i*pi*t.* ...
-            (tan(theta_x)*sDiff.qxa + tan(theta_y)*sDiff.qya)) ...
-            );
-    case 'Spherical' 
-        % Spherical wave propagator
-        k = 1/sDiff.lambda;
-        phi = atan2(theta_y,theta_x)+pi;
-        theta_tot = atan(sqrt(tan(theta_x)^2 + tan(theta_y)^2)); 
-        kx = k*cos(phi)*sin(theta_tot);
-        ky = k*sin(phi)*sin(theta_tot);
-        kz = k*cos(theta_tot);
-        % Direct Fourier space definition 
-        kMinkPlanar = sqrt((k^2 - ((kx + sDiff.qxa).^2 + (ky+sDiff.qya).^2)));
-        Sq = (kz -  kMinkPlanar); % Assume orthogonal crystal system
-%         sDiff.prop = (kz ./ kMinkPlanar) ...
-%             .* exp(-2i*pi*t.*Sq);
-        sDiff.prop  = exp(-2i*pi*t.*Sq);
-end
+sDiff.prop = exp( ...
+    sDiff.propConst ...
+    + (2i*pi*t.* ...
+    (tan(theta_x)*sDiff.qxa + tan(theta_y)*sDiff.qya)) ...
+    );
+
 if sDiff.flagUseAntiAliasing
     sDiff.prop = sDiff.qMask .* sDiff.prop;
 end
@@ -106,7 +89,6 @@ if flagStoreEWs
         EWstore = zeros(...
             [sDiff.storeLenX,sDiff.storeLenY,round(numUCs*numSubUCs)],'single');  
     end
-    IntStore = zeros(1,round(numUCs*numSubUCs),'single');
 else
     EWstore = [];
 end
@@ -148,6 +130,5 @@ for a0 = 1:ceil(numUCs)
     end
      
 end
-
 
 end
