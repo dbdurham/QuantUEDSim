@@ -13,6 +13,8 @@ function [Ilib,epsLib] = computeTiltAveragedDiffraction(...
 %   Ilib = Previously started library of diffraction patterns
 %   iStart = Iteration from which to continue the integration
 
+useGPU = false;
+
 sigmaThetaMax = max(sigmaThetaSamp);
 nTheta = numel(sigmaThetaSamp);
 symmDPs = true;
@@ -45,7 +47,7 @@ switch diffMethod
     case 'Bloch Waves'
         funcDiff = @(theta1,theta2) calcDiffBW(theta1,theta2,nUC,sDiff);    
     case 'Multislice'
-        funcDiff = @(theta1,theta2) calcDiffMS(sDiff,[nUC,0,theta1,theta2]);
+        funcDiff = @(theta1,theta2) calcDiffMS(theta1,theta2,nUC,sDiff,useGPU);
 end
 
 func = @(theta1,theta2) computeWeightedDiffStack(...
