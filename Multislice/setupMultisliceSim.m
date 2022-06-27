@@ -42,7 +42,7 @@ sDiff.AntiAliasingMode = '1/2'; % '1/2' band limits propagator to kmax/2,
 % '2/3' band limits prop to (2/3)*kmax and expPot to (2/3)*kmax
 
 % Output size
-sDiff.qRange = 4; % q range to store in *output* (A^-1)
+sDiff.qRange = 2; % q range to store in *output* (A^-1)
 
 % Overwrite defaults with input options (if provided)
 if nargin > 0
@@ -62,7 +62,7 @@ else
     sDiff.uFP = sDiff.uRMS; 
 end
  
-sDiff.downSampFac = sDiff.cellMult; % only keep every downSampFac pixels... Is a downSampFac^2 reduction in memory
+sDiff.downSampFac = sDiff.cellMult*2; % only keep every downSampFac pixels... Is a downSampFac^2 reduction in memory
 % NOTE: this is not equivalent to the q range of the simulation during the
 % computation, only what is stored after completion!
 
@@ -155,6 +155,7 @@ sDiff.qyaStore = reshape(sDiff.qya(sDiff.storeMask),...
 % sDiff.qxaStore = fftshift(sDiff.qxaStore(sDiff.xCrop,sDiff.yCrop));
 % sDiff.qyaStore = fftshift(sDiff.qya);
 % sDiff.qyaStore = fftshift(sDiff.qyaStore(sDiff.xCrop,sDiff.yCrop));
+sDiff.storeSize = size(sDiff.qxaStore);
 
 % Propagator
 switch sDiff.AntiAliasingMode
