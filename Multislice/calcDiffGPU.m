@@ -1,4 +1,4 @@
-function [EW,EWstore,sDiff,IntStore] = calcDiffGPU(sDiff,coefs,expPot)
+function [EW,EWstore,sDiff] = calcDiffGPU(sDiff,coefs,expPot)
 
 % Colin Ophus - 2020 April
 % Modified by Dan Durham and Khalid Siddiqui
@@ -26,7 +26,6 @@ numSlices = sDiff.numSlices;
 
 % coefficients
 numUCs = coefs(1); % can be fractional
-B = max(coefs(2),0); % DW Factor 
 theta_x = coefs(3); %  hor tilt
 theta_y = coefs(4); % vert tilt
 
