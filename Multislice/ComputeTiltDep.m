@@ -24,7 +24,7 @@ for iTheta = 1:nTheta
     theta_x = thetaList(iTheta); % Incident angle of the e-beam (rad)
     theta_y = 0.0;
     coefs = [nUCs,0,theta_x,theta_y];
-    [~,EWDiff,~,~] = calcDiff(sDiff,coefs);
+    [~,EWDiff,~] = calcDiff(sDiff,coefs);
     IDiff = double(abs(EWDiff).^2);
     
     if iTheta == 1

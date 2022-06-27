@@ -16,7 +16,7 @@ nUCs = 100; % Number of simulation cells to propagate through
 theta_x = 0.0; % Incident angle of the e-beam (rad)
 theta_y = 0.0;
 coefs = [nUCs,0,theta_x,theta_y];
-[~,EWDiff,~,~] = calcDiff(sDiff,coefs);
+[~,EWDiff,~] = calcDiff(sDiff,coefs);
 IDiff = double(abs(EWDiff).^2);
 
 tArray = 0.1*sDiff.cellDim(3)*(1:nUCs);
@@ -147,7 +147,7 @@ nUCs = 100; % Number of simulation cells to propagate through
 theta_x = 0.0; % Incident angle of the e-beam (rad)
 theta_y = 0.0;
 coefs = [nUCs,0,theta_x,theta_y];
-[~,EWImage,sDiff,~] = calcDiff(sDiff,coefs);
+[~,EWImage,sDiff] = calcDiff(sDiff,coefs);
 
 tArray = 0.1*sDiff.cellDim(3)*(1:nUCs); % Thickness (nm)
 StackViewerEWs(abs(EWImage),tArray)
