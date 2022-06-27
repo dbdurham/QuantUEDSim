@@ -27,9 +27,8 @@ sDiff.E0 = 750e3;  % Microscope accel voltage in volts
 sDiff.uRMS = 0.0894; % (1D) rms displacement perpendicular to diff planes (Angstroms), 0.165 at 300 K 
 sDiff.numFP = 1; %(for 0 K sims or DW damping, FP = 1); 
 sDiff.DWDamping = true; % apply DW damping to the crystal potentials... do not use with FPs!
-sDiff.computePot = false; % Compute a new potential for each UC
 % (set to false to use frozen phonons instead)
-sDiff.anisoCryst = 0;
+sDiff.computePot = false; % Compute a new potential for each UC
 
 % Manual definition of slice thicknesses
 % sRefine.numSlices = 2;  % number of slices along beam direction
