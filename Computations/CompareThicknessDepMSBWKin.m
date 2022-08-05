@@ -1,16 +1,8 @@
-%% Compare thickness dependence: BW vs MS
+%% Compare thickness dependence: BW vs MS vs Kin
 
-% Set up Bloch Wave simulations
+% Set up simulations
 sDiffBW = setupSimBW;
-
-% Set up Multislice simulations
-options.E0 = 750e3; % Electron energy (eV)
-options.uRMS = 0.0894; % 1D rms atomic displacement
-options.qRange = 4; % q range to store in *output* (A^-1)
-options.cellMult = 1;
-
-sDiffMS = setupMultisliceSim(options);
-sDiffMS.storeRealSpaceCellEWs = false;
+sDiffMS = setupSimMS;
 
 % Inputs for calculation
 theta1 = 0; % rad, x component of tilt
@@ -18,10 +10,7 @@ theta2 = 0; % rad, y component of tilt
 nUC = 100; % Number of unit cells to simulate
 
 IDiffBW = calcDiffBW(-theta1,-theta2,nUC,sDiffBW);
-
-coefs = [nUC,0,theta1,theta2];
-[~,EWDiffMS,~,~] = calcDiff(sDiffMS,coefs);
-IDiffMS = double(abs(EWDiffMS).^2);
+IDiffMS = calcDiffMS(theta1,theta2,nUC,sDiffMS);
 
 %% Display and compare
 
@@ -75,7 +64,5 @@ IArrayKin = extractIntsFromDP(IDiffKin,...
     sDiffKin.qxaStore,sDiffKin.qyaStore,GhklTest);
 I0ArrayKin = extractIntsFromDP(IDiffKin,...
     sDiffKin.qxaStore,sDiffKin.qyaStore,[0 0 0]);
-% showIvtPlusKin(IArrayBW,I0ArrayBW,...
-%     IArrayKin./sum([IArrayKin; I0ArrayKin],1),tArray,peakNames);
 showIvtPlusKin(IArrayBW,I0ArrayBW,...
     IArrayKin,tArray,peakNames);
