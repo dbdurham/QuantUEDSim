@@ -1,6 +1,7 @@
 %% Setup dynamical diffraction simulation for 
-function [sDiff] = setupMultisliceSim(options,wyckOptions)
-    
+function [sDiff] = setupSimMS(options,wyckOptions)
+
+sDiff.useGPU = false;
 showKin = true; % calculate and show "kinematical pattern" from one UC
 
 % Wyckoff options
@@ -225,5 +226,7 @@ if showKin
     caxis([0 Isort(end-1)])
     
 end
+
+sDiff.simType = 'Multislice';
 
 end
