@@ -1,11 +1,10 @@
 function [Ilib,epsLib] = computeTiltAveragedDiffraction(...
-    sigmaThetaSamp,nUC,nIter,diffMethod,sDiff,varargin)
+    sigmaThetaSamp,nUC,nIter,sDiff,varargin)
 %COMPUTETILTAVERAGEDDIFFRACTION Compute tilt-averaged diffraction pattern
 %library using one of the available methods
 %   sigmaThetaSamp = RMS tilt spreads to sample (rad)
 %   nUC = Number of unit cells to sample
 %   nIter = Compute up to this many iterations
-%   diffMethod = 'Kinematical', 'Bloch Waves', or 'Multislice'
 %   sDiff = struct containing inputs for the diffraction computation
 %   function
 %
@@ -13,7 +12,7 @@ function [Ilib,epsLib] = computeTiltAveragedDiffraction(...
 %   Ilib = Previously started library of diffraction patterns
 %   iStart = Iteration from which to continue the integration
 
-useGPU = false;
+sDiff.useGPU = false;
 
 sigmaThetaMax = max(sigmaThetaSamp);
 nTheta = numel(sigmaThetaSamp);
@@ -41,14 +40,7 @@ end
 indsThetaUpdate = 1:nTheta/tiltSubFactor; % all by default, subset if desired
 indsThetaKeep = nTheta/tiltSubFactor+1:nTheta;
 
-switch diffMethod
-    case 'Kinematical'
-        funcDiff = @(theta1,theta2) calcDiffKin(theta1,theta2,nUC,sDiff);        
-    case 'Bloch Waves'
-        funcDiff = @(theta1,theta2) calcDiffBW(theta1,theta2,nUC,sDiff);    
-    case 'Multislice'
-        funcDiff = @(theta1,theta2) calcDiffMS(theta1,theta2,nUC,sDiff,useGPU);
-end
+funcDiff = @(theta1,theta2) calcDiff(theta1,theta2,nUC,sDiff);
 
 func = @(theta1,theta2) computeWeightedDiffStack(...
     theta1,theta2,sigmaThetaSamp(indsThetaUpdate),symmDPs,funcDiff);

@@ -1,4 +1,4 @@
-function [EW,EWstore,sDiff] = calcDiffGPU(sDiff,coefs,expPot)
+function [EW,EWstore,sDiff] = calcDiffMSGPU(sDiff,coefs,expPot)
 
 % Colin Ophus - 2020 April
 % Modified by Dan Durham and Khalid Siddiqui

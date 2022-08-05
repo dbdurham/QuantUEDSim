@@ -1,4 +1,4 @@
-function [EW,EWstore,sDiff] = calcDiff(sDiff,coefs,expPot)
+function [EW,EWstore,sDiff] = calcDiffMSCPU(sDiff,coefs,expPot)
 
 % Colin Ophus - 2020 April
 % Modified by Dan Durham and Khalid Siddiqui
