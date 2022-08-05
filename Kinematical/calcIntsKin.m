@@ -19,7 +19,7 @@ extDist = pi.*sDiff.Vcryst.*cos(braggAngle)...
 % Calculate diffracted intensities vs thickness
 I = (sin(pi*s_G*t)./(s_G.*extDist)).^2;
 % Handle zero-order beam (excitation error = 0)
-I(s_G==0,:) = (pi*t./extDist(s_G==0)).^2;
+I(s_G==0,:) = 1;
 % Apply DWF
 [~,DWInt] = computeDWF(sDiff.uRMS,1,sDiff.Gmag);
 I = I.*DWInt;
