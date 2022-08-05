@@ -84,7 +84,7 @@ for iTest = 1:nTests
     rng(0) % fix random seed for comparison
     
     % Perform simulation
-    sDiff = setupMultisliceSim(options);
+    sDiff = setupSimMS(options);
     if useGPU
         expPot = gpuArray(single(sDiff.expPot));
         tic

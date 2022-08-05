@@ -1,6 +1,6 @@
 %% Compute and display tilt-averaged diffraction pattern
 
-sDiff = setupMultisliceSim();
+sDiff = setupSimMS();
 
 nTheta = 64;
 sigmaThetaMax = 0.16; % rad

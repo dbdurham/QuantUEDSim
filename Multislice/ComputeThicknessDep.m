@@ -8,7 +8,7 @@ options.E0 = 750e3; % Electron energy (eV)
 options.uRMS = 0.0894; % 1D rms atomic displacement
 options.qRange = 4; % q range to store in *output* (A^-1)
 options.cellMult = 1;
-sDiff = setupMultisliceSim(options); 
+sDiff = setupSimMS(options); 
 
 %% 2a. Compute diffraction patterns
 sDiff.storeRealSpaceCellEWs = false;

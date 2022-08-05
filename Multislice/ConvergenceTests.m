@@ -51,11 +51,11 @@ for iTest = 1:nTests
         options = struct;
         wyckoffOptions = struct;
         wyckoffOptions.(paramToTest) = paramRange(iTest);
-        sRefine = setupMultisliceSim(options,wyckoffOptions);
+        sRefine = setupSimMS(options,wyckoffOptions);
     else
         options = struct;
         options.(paramToTest) = paramRange(iTest);
-        sRefine = setupMultisliceSim(options);
+        sRefine = setupSimMS(options);
     end
     
     rng(0) % fix random seed for comparison
