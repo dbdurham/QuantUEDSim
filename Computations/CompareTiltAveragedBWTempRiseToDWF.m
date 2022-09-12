@@ -1,4 +1,5 @@
-%% Compare tilt-averaged Kin, BW, MS
+%% Compare tilt-averaged BW at two temperatures to DW model
+% Figure 2b-c in D.B. Durham et al, Arxiv preprint 2022
 
 %% Load stack of BW simulated patterns at T1
 
@@ -56,74 +57,26 @@ sList = 2*pi*GmagTest;
 s2 = 4*pi^2*GmagTest.^2;
 du2BW = sDiff2.uRMS^2-sDiff1.uRMS^2;
 
-% figure;
-% for iPlot = 1:nPlots
-%     plot(s2,...
-%         mlogIRatioArray(:,iUCToPlot(iPlot)),...
-%         '.','MarkerSize',14,...
-%         'Color',colorList(iPlot,:))
-%     hold on
-% end
-% plot(s2,s2*du2BW,'k--','LineWidth',1.5)
-% xlabel('s^2')
-% ylabel('-log(I_{on}/I_{off})')
-% 
-% nUC = 50;
-% 
-% figure;
-% for iPlot = 1:nPeaks
-%     x = repmat(s2(iPlot),[1 nUC]);
-%     y = mlogIRatioArray(iPlot,1:nUC);
-%     z = tArray(1:nUC);
-%     patch([x nan],[y nan],[z nan],[z nan], ...
-%         'edgecolor', 'interp', 'LineWidth',2); 
-%     hold on
-% end
-% colorbar;colormap(parula(1024));
-% plot(s2,s2*du2BW,'k--','LineWidth',1.5)
-% xlabel('s^2')
-% ylabel('-log(I_{on}/I_{off})')
-
 % colorList = 0.8*jet(nPeaks);
-% figure;
+% figure('Position',[200 200 400 300]);
 % lobjs = gobjects(nPeaks,1);
-% plot([0 tArray(end)],...
-%         3*du2BW.*[1 1],...
-%         'k--','LineWidth',1.25)
-% hold on
 % plot([0 tArray(end)],...
 %         0.*[1 1],...
 %         'k-','LineWidth',0.5)
+% hold on
 % for iPlot = 1:nPeaks
+%     du2DW = mlogIRatioArray(iPlot,:)./sList(iPlot).^2;
+%     pctErrorDWSim = 100*(du2DW-du2BW)./du2BW;
 %     lobjs(iPlot) = plot(tArray,...
-%         3*mlogIRatioArray(iPlot,:)./s2(iPlot),...
+%         pctErrorDWSim,...
 %         '-','LineWidth',1.5,...
 %         'Color',colorList(iPlot,:));
 %     
 % end
+% xlim([0 40])
 % xlabel('Thickness(nm)')
-% ylabel('-3*log(I_{on}/I_{off})/s^2')
-
-colorList = 0.8*jet(nPeaks);
-figure('Position',[200 200 400 300]);
-lobjs = gobjects(nPeaks,1);
-plot([0 tArray(end)],...
-        0.*[1 1],...
-        'k-','LineWidth',0.5)
-hold on
-for iPlot = 1:nPeaks
-    du2DW = mlogIRatioArray(iPlot,:)./sList(iPlot).^2;
-    pctErrorDWSim = 100*(du2DW-du2BW)./du2BW;
-    lobjs(iPlot) = plot(tArray,...
-        pctErrorDWSim,...
-        '-','LineWidth',1.5,...
-        'Color',colorList(iPlot,:));
-    
-end
-xlim([0 40])
-xlabel('Thickness(nm)')
-ylabel('\DeltaT_{Kin-Dyn} (%)')
-legend(lobjs,peakNames)
+% ylabel('\DeltaT_{Kin-Dyn} (%)')
+% legend(lobjs,peakNames)
 
 colorList = 0.8*jet(nPeaks);
 figure;
@@ -196,7 +149,6 @@ hold on
 % contour(X,Y,du2ErrorArray,[-10,-10],'--','LineWidth',1,'Color',contourColor1)
 contour(X,Y,du2ErrorArray,[-25,-25],'--','LineWidth',1,'Color','w')
 contour(X,Y,du2ErrorArray,[-50,-50],'--','LineWidth',1,'Color','w')
-contour(X,Y,du2ErrorArray,[-66.6,-66.6],'--','LineWidth',1,'Color','w')
 contour(X,Y,du2ErrorArray,[-75,-75],'--','LineWidth',1,'Color','w')
 xlabel('\sigma_{\theta} (mrad)')
 ylabel('Thickness (nm)')
@@ -206,24 +158,4 @@ colorbar()
 caxis([-250 250])
 set(gca,'ydir','normal')
 xlim([1.25 125])
-
-
-du2ErrorLog10 = sign(du2ErrorArray).*log10(abs(du2ErrorArray));
-
-figure;
-imagesc(sigmaThetaSamp([1 end])*1e3,...
-    tArray([1 end]),...
-    du2ErrorLog10);
-hold on
-[X,Y] = meshgrid(sigmaThetaSamp.*1e3,tArray);
-% contour(X,Y,du2ErrorArray,[-10,-10],'g--','LineWidth',1)
-% contour(X,Y,du2ErrorArray,[-30,-30],'g--','LineWidth',1)
-% contour(X,Y,du2ErrorArray,[-50,-50],'g--','LineWidth',1)
-xlabel('\sigma_{\theta} (mrad)')
-ylabel('Thickness (nm)')
-title('Error in \Deltau^2 using DW fit (%)')
-colormap(cmap)
-colorbar()
-caxis([-2.5 2.5])
-set(gca,'ydir','normal')
 

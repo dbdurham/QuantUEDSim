@@ -1,16 +1,26 @@
 function sDiff = setupSimKin(options)
-%SETUPSIMKIN Set up parameter struct for kinematical diffraction
-%simulations
-%   
+%SETUPSIMKIN Set up parameters for kinematical calculations
+%   options (optional) - struct containing input variables, listed below
 
-% Input variables
-E0 = 750e3; %eV
+% Default options
+E0 = 750e3; % Electron kineatic energy (eV)
 uRMS = 0; % 1D rms displacement perpendicular to Bragg planes (Angstroms)
+cellMult = 2;
+downSampFacCell = 2;
+imageSizeCell = 32;
+
+% Overwrite defaults with input options (if provided)
+if nargin > 0
+    fieldNames = fieldnames(options);
+    nFields = length(fieldNames);
+    for iField = 1:nFields
+        fname = fieldNames{iField};
+        [~] = evalc([fname ' = ' num2str(options.(fname))]);
+    end
+end
 
 % Projected diffraction pattern sampling parameters
-cellMult = 2;
-imageSizeCell = 32;
-downSampFac = cellMult*2;
+downSampFac = cellMult*downSampFacCell;
 
 % Beam physical constants
 lambElec = computeElectronWavelength(E0); % Angstroms

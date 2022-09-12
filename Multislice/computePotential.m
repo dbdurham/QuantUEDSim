@@ -1,7 +1,7 @@
 function sDiff = computePotential(sDiff)
+% COMPUTEPOTENTIAL generate the potential slices
 
-correctForTilt = false;
-if correctForTilt
+if sDiff.correctPotsForTilt
     theta_x_corr = cos(sDiff.theta_x);
     theta_y_corr = cos(sDiff.theta_y);
 else

@@ -91,7 +91,7 @@ end
 if flagPlot == true
     
     % plot output
-    figure(1)
+    figure()
     clf
     set(gcf,'color','w')
     hold on

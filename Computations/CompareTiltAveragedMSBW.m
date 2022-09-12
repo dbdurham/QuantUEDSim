@@ -1,4 +1,5 @@
 %% Compare tilt-averaged BW, MS
+% Appendix in D.B. Durham et al, Arxiv preprint 2022
 
 %% Load stack of BW simulated patterns
 [filename, pathname] = uigetfile('*.mat','Load DP library');
@@ -53,7 +54,7 @@ end
 
 cmap = violetFire.^0.5;
 
-figure;
+figure('Position',[100 100 350 250]);
 imagesc(sigmaThetaSamp([1 end])*1e3,...
     tArray([1 end]),...
     Rarray);
@@ -66,17 +67,7 @@ ylabel('Thickness (nm)')
 title('R_{BW - MS} (%)')
 colormap(cmap)
 colorbar()
-caxis([0 40])
+xlim([0 120])
+xticks([0:20:120])
+caxis([0 2.5])
 set(gca,'ydir','normal')
-
-%% Plot tilt-averaged peaks
-
-iTheta = 40;
-IArraySim2 = extractIntsFromDP(Ilib2(:,:,:,iTheta,iEnd2),...
-        sDiff2.qxaStore,sDiff2.qyaStore,GhklTest);
-I0ArraySim2 = extractIntsFromDP(Ilib2(:,:,:,iTheta,iEnd2),...
-        sDiff2.qxaStore,sDiff2.qyaStore,[0 0 0]);
-IArraySim1 = extractIntsFromDP(Ilib1(:,:,:,iTheta,iEnd),...
-    sDiff1.qxaStore,sDiff1.qyaStore,GhklTest);
-
-showIvtPlusKin(IArraySim2,I0ArraySim2,IArraySim1,tArray,peakNames);

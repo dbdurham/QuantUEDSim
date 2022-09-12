@@ -11,6 +11,7 @@ function [Ilib,epsLib] = computeTiltAveragedDiffraction(...
 %   Optional inputs:
 %   Ilib = Previously started library of diffraction patterns
 %   iStart = Iteration from which to continue the integration
+%   tiltSubFactor = Subset of tilt range to extend for
 
 sDiff.useGPU = false;
 
@@ -18,7 +19,7 @@ sigmaThetaMax = max(sigmaThetaSamp);
 nTheta = numel(sigmaThetaSamp);
 symmDPs = true;
 
-if nargin > 5
+if nargin > 4
     % Extend computation of a previous library
     Ilib = varargin{1};
     iStart = varargin{2};
@@ -31,7 +32,7 @@ else
     iStart = 1;
 end
 
-if nargin > 7
+if nargin > 6
     % extend computation of a subset of the tilt range
     tiltSubFactor = varargin{3};
 else

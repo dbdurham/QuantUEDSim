@@ -9,17 +9,16 @@ function [EW,EWstore,sDiff] = calcDiffMSCPU(sDiff,coefs,expPot)
 
 % coefficients
 numUCs = coefs(1); % can be fractional
-% B = max(coefs(2),0); % DW Factor -- NOT USED
-theta_x = coefs(3); %  hor tilt
-theta_y = coefs(4); % vert tilt
+theta_x = coefs(2); %  hor tilt
+theta_y = coefs(3); % vert tilt
 
 sDiff.theta_x = theta_x;
 sDiff.theta_y = theta_y;
 
 % Compute potential at prescribed sample tilt
-correctPotsForTilt = false;
-if correctPotsForTilt
+if sDiff.correctPotsForTilt
     sDiff = computePotential(sDiff);
+    expPot = sDiff.expPot;
 end
 
 % Option to recompute pots for each unit cell

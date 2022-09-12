@@ -1,13 +1,17 @@
-%% Setup dynamical diffraction simulation for 
-function [sDiff] = setupSimMS(options,wyckOptions)
+function [sDiff] = setupSimMS(options)
+%SETUPSIMMS Set up the parameters and potentials for multislice calculation
+%   options (optional) - struct containing input variables, listed below
 
-sDiff.useGPU = false;
+sDiff.useGPU = false; % flag to use GPU calculations
 showKin = true; % calculate and show "kinematical pattern" from one UC
 
 % Wyckoff options
-sDiff.cellMult = 1;
+sDiff.cellMult = 1; % Number of unit cells to tile laterally in sim cell
 
-% Incident beam angles
+% Incident beam angles (only need to define here if performing tilt
+% compensation on the potentials... usually will be overwritten later e.g.
+% if doing series of tilt-dependent calculations)
+sDiff.correctPotsForTilt = false;
 sDiff.theta_x = 0;
 sDiff.theta_y = 0;
 
@@ -16,7 +20,7 @@ sDiff.theta_y = 0;
 % sDiff.pixelSize = 0.02;           % approx realspace pixel size (Angstroms).
 % f = 4;
 % sDiff.imageSize = round(sDiff.cellDim(1:2)/sDiff.pixelSize./f).*f;
-sDiff.imageSizeCell = 256;
+sDiff.imageSizeCell = 256; % number of pixels per axis per cell
 
 sDiff.potBound = 3;       % Radial distance to integrate atomic potentials. (real space, Angstroms)
 % Note that a higher potBound is needed for DW damping which broadens the
@@ -45,6 +49,8 @@ sDiff.AntiAliasingMode = '1/2'; % '1/2' band limits propagator to kmax/2,
 % Output size
 sDiff.qRange = 2; % q range to store in *output* (A^-1)
 
+sDiff.downSampFacCell = 2;
+
 % Overwrite defaults with input options (if provided)
 if nargin > 0
     fieldNames = fieldnames(options);
@@ -63,7 +69,7 @@ else
     sDiff.uFP = sDiff.uRMS; 
 end
  
-sDiff.downSampFac = sDiff.cellMult*2; % only keep every downSampFac pixels... Is a downSampFac^2 reduction in memory
+sDiff.downSampFac = sDiff.cellMult*sDiff.downSampFacCell; % only keep every downSampFac pixels... Is a downSampFac^2 reduction in memory
 % NOTE: this is not equivalent to the q range of the simulation during the
 % computation, only what is stored after completion!
 

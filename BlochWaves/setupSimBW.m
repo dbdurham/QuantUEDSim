@@ -1,21 +1,28 @@
 function sDiff = setupSimBW(options)
 %SETUPSIMBW Set up the Bloch Wave calculation
-%   Detailed explanation goes here
+%   options (optional) - struct containing input variables, listed below
 
-% Inputs
+% Default options
 E0 = 750e3; % eV beam kinetic energy    
 uRMS = 0.0894; % 1D rms displacement across Bragg planes (Angstroms)
 GxyThresh = 4.5; % in-plane reciprocal space threshold (inv Angstroms)
-sThresh = 0.2; % Excitation error threshold (inv Angstroms)
+sThresh = 0.1; % Excitation error threshold (inv Angstroms)
+cellMult = 2;
+downSampFacCell = 2;
+imageSizeCell = 32;
 
-if nargin>0 && isfield(options,'uRMS')
-    uRMS = options.uRMS;
+% Overwrite defaults with input options (if provided)
+if nargin > 0
+    fieldNames = fieldnames(options);
+    nFields = length(fieldNames);
+    for iField = 1:nFields
+        fname = fieldNames{iField};
+        [~] = evalc([fname ' = ' num2str(options.(fname))]);
+    end
 end
 
 % Projected diffraction pattern sampling parameters
-cellMult = 2;
-imageSizeCell = 32;
-downSampFac = cellMult*2;
+downSampFac = cellMult*downSampFacCell;
 
 % Beam physical constants
 lambElec = computeElectronWavelength(E0); % Angstroms

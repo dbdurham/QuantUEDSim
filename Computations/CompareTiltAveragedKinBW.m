@@ -1,4 +1,5 @@
-%% Compare tilt-averaged Kin, BW, MS
+%% Compare tilt-averaged BW to Kinematical
+% Figure 1d-e in D.B. Durham et al, Arxiv preprint 2022
 
 %% Load stack of BW simulated patterns
 [filename, pathname] = uigetfile('*.mat','Load DP library');

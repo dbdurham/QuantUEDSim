@@ -1,7 +1,14 @@
 %% Compute and display Bloch Wave tilt-averaged library
 % as used in D.B. Durham et al, ArXiv Preprint 2022 
 
-sDiff = setupSimBW();
+options = struct;
+options.E0 = 750e3; % Electron energy (eV)
+options.uRMS = 0.0894; % 1D rms atomic displacement
+options.GxyThresh = 4.5;
+options.sThresh = 0.1;
+options.cellMult = 2;
+options.downSampFacCell = 2;
+sDiff = setupSimBW(options);
 
 nTheta = 64;
 sigmaThetaMax = 0.16; % rad
@@ -13,7 +20,8 @@ nIter = 9;
 % Compute the first set of tilt-averaged patterns
 Ilib = computeTiltAveragedDiffraction(sigmaThetaSamp,nUC,nIter,sDiff);
 % Further converge the smallest tilt-range patterns
-Ilib = computeTiltAveragedDiffraction(sigmaThetaSamp,nUC,10,sDiff,Ilib,10,4);
+Ilib = computeTiltAveragedDiffraction(sigmaThetaSamp,nUC,nIter+1,sDiff,...
+    Ilib,nIter+1,4);
 
 tArray = 0.1*sDiff.cellDim(3)*(1:nUC);
 

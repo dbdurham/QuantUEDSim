@@ -22,12 +22,21 @@ numSlicesSubUC = ceil(sDiff.numSlices/numSubUCs);
 numSlices = sDiff.numSlices;
 
 % store total intensity in the EW (optional for convergence testing)
-% storeTotalInt = false;
+% storeTotalInt = false
 
 % coefficients
 numUCs = coefs(1); % can be fractional
-theta_x = coefs(3); %  hor tilt
-theta_y = coefs(4); % vert tilt
+theta_x = coefs(2); %  hor tilt
+theta_y = coefs(3); % vert tilt
+
+sDiff.theta_x = theta_x;
+sDiff.theta_y = theta_y;
+
+% Compute potential at prescribed sample tilt
+if sDiff.correctPotsForTilt
+    sDiff = computePotential(sDiff);
+    expPot = sDiff.expPot;
+end
 
 % Recompute propagator with tilts
 % For uneven slices, sliceThickness is a vector with numSlices

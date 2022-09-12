@@ -1,4 +1,5 @@
 %% Compare thickness dependence: BW vs MS vs Kin
+% as used in D.B. Durham et al, ArXiv Preprint 2022 
 
 % Set up simulations
 sDiffBW = setupSimBW;
@@ -43,13 +44,15 @@ I0ArrayMS = extractIntsFromDP(IDiffMS,...
 tArray = (1:nUC)*sDiffBW.cellDim(3)*0.1; %nm
 
 showIvt(IArrayBW,I0ArrayBW,tArray,peakNames);
+title('Bloch Waves')
 showIvt(IArrayMS,I0ArrayMS,tArray,peakNames);
+title('Multislice')
 
 R = computeRStack(cat(3,IArrayBW,IArrayMS));
 figure;
 semilogy(tArray,R(:,1),'k-','LineWidth',1.5)
 xlabel('Thickness (nm)')
-ylabel('R (%)')
+ylabel('R_{BW-MS} (%)')
 
 %% Plot BW intensities superimposed w/ Kinematical intensities
 

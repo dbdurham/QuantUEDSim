@@ -6,8 +6,13 @@ theta1 = 0; % rad, x component of tilt
 theta2 = 0; % rad, y component of tilt
 nUC = 100; % Number of unit cells to simulate
 
+options = struct;
+options.qRange = 4; % q range to store in *output* (A^-1)
+options.cellMult = 1;
+options.downSampFacCell = 1;
+
 % Setup simulation
-sDiff = setupSim(simType);
+sDiff = setupSim(simType,options);
 % Compute diffraction patterns
 IDiff = calcDiff(theta1,theta2,nUC,sDiff);
 
