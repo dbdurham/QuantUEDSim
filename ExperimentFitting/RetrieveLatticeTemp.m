@@ -1,8 +1,11 @@
 %% Fit bloch wave results to extract lattice temperature
+% Figure 6b-c in D.B. Durham et al, ArXiv Preprint 2022
 
 %% Define and load experiment data
 
-load('FluenceScan_mlogI_v2.mat')
+%load('FluenceScan_mlogI_v2.mat')
+[filename, pathname] = uigetfile('*.mat');
+load([pathname filename])
 
 nPeaks = size(hklExp,1);
 
@@ -23,8 +26,7 @@ iUC = 33;
 iTheta = 38; 
 
 % Define simulated library to use for matching
-ftag = ['C:/Users/ddurh/OneDrive/Documents/Berkeley/Research'...
-    '/HiRES/DiffractionSimPackageOutputs/TestOutputs/Library_u2Tilt_BW_01/'...
+ftag = ['../../DiffractionSimData/Simulated/Library_u2Tilt_BW_01/'...
     '750keV_160mrad_50UC_BW_u'];	
 fnameList = arrayfun(@(c) [ftag num2str(c,'%02.f') '.mat'],...
     1:15,'UniformOutput',false);
@@ -207,39 +209,7 @@ xlabel('-ln(I_{on,exp}/I_{off,exp})')
 ylabel('-ln(I_{on,sim}/I_{off,sim})')
 legend('DW','MS')
 
-% Compute and display residuals
-resValSim = zeros(1,nFiles);
-resValDW = zeros(1,nFiles);
-for iFile = 1:nFiles
-    resValSim(iFile) = sum(abs(mlogISim(du2SimEnd(iFile)) - mlogIEnd(iFile,:)).^2)...
-        ./sum(abs(mlogIEnd(iFile,:)).^2);
-    resValDW(iFile) = sum(abs(du2End(iFile).*sList.^2 - mlogIEnd(iFile,:)).^2)...
-        ./sum(abs(mlogIEnd(iFile,:)).^2);
-end
-figure;
-plot(fluenceArray,100*resValSim,'kd',...
-    'MarkerSize',6,'MarkerFaceColor','k')
-hold on
-plot(fluenceArray,100*resValDW,'k.','MarkerSize',18)
-xlabel('Peak fluence (mJ/cm^{2})')
-ylabel('Residual (%)')
-
-% Thermal motions vs fluence (3D)
-figure;
-plot(fluenceArray,3*du2Start,'k.','MarkerSize',18)
-hold on
-plot(fluenceArray,3*du2SimStart,'kd',...
-    'MarkerSize',6,'MarkerFaceColor','k')
-plot(fluenceArray,3*du2End,'r.','MarkerSize',18)
-plot(fluenceArray,3*du2SimEnd,'rd',...
-    'MarkerSize',6,'MarkerFaceColor','r')
-xlabel('Peak fluence (mJ/cm^{2})')
-ylabel('\Delta u_{rms,3D}^{2} (Angstroms^{2})')
-legend('DW before t_0','Sim before t_0',...
-    'DW after t_0','Sim after t_0')
-xlim([0 11])
-
-%% Compute and add lattice temperature to curves
+%% Plot fluence dependence of retrieved u2 and lattice temperature
 
 % Lattice temperature vs fluence (using model proposed by 
 % Owens and Williams)
