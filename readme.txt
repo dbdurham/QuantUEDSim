@@ -5,9 +5,11 @@ This code was written to perform the calculations published in:
 by Daniel B. Durham, Colin Ophus, Khalid M. Siddiqui, Andrew M. Minor, and Daniele Filippetto
 Preprint posted to ArXiv in Sep 2022.
 
+This code package includes kinematical, bloch wave, and multislice codes to calculate electron diffraction patterns from flat or rippled single crystal foils for UED, with gold included as an example. Some key parameters accounted for here include: crystal structure, lattice temperature, sample topography. Libraries of diffraction patterns can be calculated and fit to experimental data to retrieve lattice temperture changes.
+
 All are welcome to use/adapt this code and the methods described here and in the article. We simply ask if you do that you please cite the article.
 
-This code package includes kinematical, bloch wave, and multislice codes to calculate electron diffraction patterns from flat or rippled single crystal foils for UED, with gold included as an example. Some key parameters accounted for here include: crystal structure, lattice temperature, sample topography. Libraries of diffraction patterns can be calculated and fit to experimental data to retrieve lattice temperture changes.
+We acknowledge support from STROBE: A National Science Foundation Science and Technology Center and the US Department of Energy, Office of Science, Basic Energy Sciences.
 
 Folder organization:
 Kinematical: functions specific to kinematical calculations
