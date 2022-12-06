@@ -4,6 +4,7 @@ This code was written to perform the calculations published in:
 "Accurate quantification of lattice temperature dynamics from ultrafast electron diffraction of single-crystal films using dynamical scattering simulations" 
 by Daniel B. Durham, Colin Ophus, Khalid M. Siddiqui, Andrew M. Minor, and Daniele Filippetto
 Preprint posted to ArXiv in Sep 2022.
+Published in Structural Dynamics on Dec 05 2022. https://doi.org/10.1063/4.0000170
 
 This code package includes kinematical, bloch wave, and multislice codes to calculate electron diffraction patterns from flat or rippled single crystal foils for UED, with gold included as an example. Some key parameters accounted for here include: crystal structure, lattice temperature, sample topography. Libraries of diffraction patterns can be calculated and fit to experimental data to retrieve lattice temperture changes.
 
