@@ -23,7 +23,7 @@ tArray = 0.1*sDiff.cellDim(3)*(1:nUC);
 
 [savefile,savepath] = uiputfile('*.mat');
 
-for iSim = 2:nSims
+for iSim = 1:nSims
     options.uRMS = uRMSList(iSim);
     sDiff = setupSimBW(options);
 

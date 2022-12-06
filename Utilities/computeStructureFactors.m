@@ -17,13 +17,15 @@ nAtoms = size(lattice,1);
 nOrders = size(hkl,1);
 Fhkl = zeros(nOrders,1);
 
+gam = computeLorentzFactor(E0);
+
 for ii = 1:nOrders
     for xx = 1:nAtoms
         switch scatApprox
             case 'Born'
                 f = electronScatteringFactor(Z(xx),Gmag(ii),fparams);
                 if correctLorentz
-                    f = gamma*f;
+                    f = gam*f;
                 end
             case 'Moliere'
                 f = electronScatteringFactorMoliere(Z(xx),Gmag(ii),E0,fparams);

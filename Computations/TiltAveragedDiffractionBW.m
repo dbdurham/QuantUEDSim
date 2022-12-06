@@ -17,6 +17,8 @@ sigmaThetaSamp = (sigmaThetaMax/nTheta)*(1:nTheta);
 nUC = 100;
 nIter = 9;
 
+[savefile,savepath] = uiputfile('*.mat');
+
 % Compute the first set of tilt-averaged patterns
 Ilib = computeTiltAveragedDiffraction(sigmaThetaSamp,nUC,nIter,sDiff);
 % Further converge the smallest tilt-range patterns
@@ -27,7 +29,6 @@ tArray = 0.1*sDiff.cellDim(3)*(1:nUC);
 
 StackViewerDiff(fftshift(fftshift(Ilib(:,:,:,end,5),1),2),tArray)
 
-[savefile,savepath] = uiputfile('*.mat');
 save([savepath savefile],'Ilib','sDiff',...
     'nTheta','sigmaThetaMax','sigmaThetaSamp',...
     'nUC','nIter','tArray');

@@ -54,7 +54,7 @@ imagesc(sigmaThetaSamp([1 end])*1e3,...
     Rarray);
 xlabel('\sigma_{\theta} (mrad)')
 ylabel('Thickness (nm)')
-title('R_{exp - sim} (%)')
+title('R_{Exp - Sim} (%)')
 colormap(cmap)
 colorbar()
 caxis([0 50])
